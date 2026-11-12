@@ -10,6 +10,7 @@ import {
 
 import { useCopy } from '../i18n';
 import { Button } from './button';
+import { GoToTime } from './go-to-time';
 import { FullscreenEnterIcon, FullscreenExitIcon, PipIcon } from './icons';
 import { MuteButton } from './mute-button';
 import { PlayButton } from './play-button';
@@ -69,7 +70,9 @@ export function Panel() {
         </div>
         <div className="signal-row signal-row--b">
           <Time.Group className="signal-time">
-            <Time.Value type="current" />
+            <span className="signal-goto-cell">
+              <GoToTime />
+            </span>
             <Time.Separator />
             <Time.Value type="duration" />
           </Time.Group>

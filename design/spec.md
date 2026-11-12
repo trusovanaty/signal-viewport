@@ -105,7 +105,7 @@ The material shown under the player comes from `MATERIAL` in `apps/preview/src/f
 
 Widths 320, 375, 768, 1440 (player widths 288, 343, 707, 960): no horizontal page scroll, no control overlaps, touch targets at least 48 px, ruler labels never collide, preview thumbnail and time chip stay inside the player at both ends of the ruler, mobile sheet stays inside the player and scrolls, a long and a Ukrainian title end with an ellipsis, the status and chapter hide first, hours time wraps to its own line on narrow players. Error dialog, ended state, resume notice, Start over and the visible keyboard focus were exercised. Not verified: Safari, Firefox, a real phone, a screen reader, real reduced-motion setting.
 
-## Showcase page (demo.html, local: http://localhost:5199/demo.html, `?lang=uk` for Ukrainian)
+## Showcase page (entry `index.html`; local dev: `/`, `?lang=uk` for Ukrainian; the workbench is `workbench.html`, the frame it uses `preview.html`)
 
 Sections: compact hero and the one real player; "The picture stays clear" (real frame, three labels in a rail beside it, a numbered list under it on narrow screens); "Find the moment" (a recorded clip, silent, no autoplay, started by a button below it, labeled "Recorded from the player"); "Rearranged. Not squeezed." (wide and narrow real frames, no phone body, each labeled with the measured window and player width); "Every state has a place" (one large frame, six plain toggle buttons with aria-pressed, no tabs semantics, no carousel; Checked and Known limitations lists); "Built on Video.js v10" (the setup from `frame/player.tsx`, link to the workbench, credits and font licenses).
 
@@ -128,3 +128,71 @@ The white row was the hover/focus fill (library `data-highlighted`). Now: hover 
 | 1440 | 960 | none | none |
 
 Also checked: images load, links return 200, gallery toggles work by keyboard (Tab, Space), Ukrainian page (lang uk, Onest in headings and text, IBM Plex Mono in labels), resume and Start over still work. Not checked: Safari, Firefox, a real phone, a screen reader, a real reduced-motion setting.
+
+### Final check round (routes, example, Ukrainian copy, README)
+
+- Routes: the showcase is now `apps/preview/index.html` (the entry), the workbench moved to `workbench.html`; `vite.config.ts` inputs are `showcase`, `workbench`, `preview`. The showcase's "Open workbench" link points at `./workbench.html`. The workbench still frames `preview.html` and renders the skin. Missing favicon links on the workbench and preview pages were added (they caused a 404 in the console).
+- The integration example is a complete file (imports, `resumeKey`, placeholders) that type-checks against the project; it is titled "Minimal example" and the text says what to copy and replace. It was not run against a stream of its own.
+- Ukrainian copy was reread against the English: calques removed ("Призначено жити поза цією сторінкою", "Дотикове меню", "Нічим не закрите" kept as a natural phrase), plain terms for the timeline trio, and "Не є офіційним продуктом Video.js".
+- README rewritten for this project (idea, run, showcase and workbench, features, use and `resumeKey`, layout, checked and not checked, licenses).
+- Checks (Chrome on Windows): all six gallery images and `timeline.mp4` load; the recording plays from its own button (the main player stays idle); links return 200 or point at the public repository; no console errors on the showcase at 320, 375, 768 and 1440; the workbench and the preview page load the skin.
+
+## Go to time (precise jump on a long video)
+
+- The elapsed time in the panel is a button ("Go to time"). Pressing it (mouse, touch, Enter or Space) lays a small field over the readout; the separator and total are hidden, not removed, so the row and the panel never change size (checked at 320, 375 and 1440 px).
+- Formats: `m:ss` (minutes may be any number, so 90:00 works) and `h:mm:ss` (minutes and seconds up to 59). Enter jumps with the player's own `seek` action, so play or pause stays as it was; Escape or a click elsewhere closes it, and Escape returns focus to the button. Not in the formats: "Use m:ss or h:mm:ss". Past the end: "Past the end. Max 36:00". The message is a plate on the picture's lower edge with `role="alert"` and `aria-describedby` on the field. After a jump a polite live region says "Went to 30:00". English and Ukrainian strings.
+- Typing never reaches the hotkeys (Video.js ignores editable targets): m, f, k, space and digits typed in the field changed nothing. The jump is an ordinary seek, so the saved position follows (jump to 30:00, play, pause, reload: "Resumed 30:01").
+- Limitation: in fullscreen the browser itself consumes Escape to leave fullscreen (the field closes on a second press). Not tested in a real fullscreen session.
+
+### Long source test (local only)
+
+A real 36:00 MP4 was generated with ffmpeg (test pattern with a running counter, silent tone, 22 MB, keyframe every 5 s) and played from a local-only page (`apps/preview/long-test.html`, file in `apps/preview/_local/`, both git-ignored and not part of the build). The duration is the file's own (2160 s), nothing is overridden. Results (Chrome, Windows): the ruler labels are 0:00, 10:00, 20:00, 30:00; a click on the ruler at 30:00 lands on 29:46 (pixel precision); Go to time 30:00 lands on 30:00 exactly; 12:34 while playing stays playing; 0:35:59 gives 35:59; 36:00 and 0:00 work; 1:05:30, abc and 75:99 show errors and do not move the video. Keyboard: Tab reaches the button in five stops from the page start, Enter opens, Enter jumps, Escape closes. Mobile 375 and 320: field and message inside the player, no horizontal scroll. Not tested: Safari, Firefox, a real phone, a screen reader, a real hours-long stream.
+
+## Demo footage swapped to the fashion film
+
+- The showcase player now plays `apps/preview/public/media/scarlet-walk.mp4`, an AI-generated 10-second fashion film (Kling 2.6 Pro through Flora: two 5-second clips, the second started from the last frame of the first, joined by a straight cut). A plain MP4 through the `Video` component; no Mux. Title "Scarlet Walk", labeled "Demo footage"; the author line stays empty. Credits tell readers to check the generator's terms before reusing it.
+- Tracks written for it: chapters (Approach, Silhouette), English captions (three short lines of original text), and a ruler storyboard (a 10-frame sprite sheet `thumbs.jpg` with `thumbs.vtt`), so previews, chapters and captions all work. Quality is absent (a single MP4), as the skin intends.
+- All showcase frames and the recorded clip were captured again from this video. The Restored frame is taken on a 36-minute copy (the film looped, `apps/preview/_local/long-scarlet.mp4`, git-ignored), because saved positions apply only to videos longer than 15 seconds; the page says so. The Loading and Error frames come from stalling and blocking the MP4.
+- Checks again (Chrome, Windows): widths 320, 375, 768, 1440 without horizontal scroll or console errors, all images and the clip load, all six gallery toggles load their images, the recording plays from its button while the main player stays idle, the workbench and preview page load the skin.
+
+## Visual edit of the showcase (local: http://localhost:5199/ , `?lang=uk`)
+
+Three scales instead of one: the wide player (up to 1120 px inside a 1184 px column with 32 px gutters, 16 px on phones), large interface fragments (sharp 2x crops), and compact text columns (about 34 em). Text never spans the player's width. White page, black type, one full-width black band; red stays the colour of the player panel.
+
+- **Hero.** Mono top row (SIGNAL VIEWPORT, VIDEO.JS V10 SKIN) and an EN | UK switch (plain links to `?lang=en` and `?lang=uk`, `aria-current` on the active one). Slogan "EVERY FRAME. WITHIN REACH." / "КОЖЕН КАДР. ПІД КОНТРОЛЕМ." is sized from its own container width (`11.8cqw`, 30–104 px): 104 px at 1440, 85 px at 768, 40 px at 375, 34 px at 320 (the longest Ukrainian line is 279 px of 288). The real player starts at y = 347 in a 1440×900 window. Under it: title, "Demo footage", the AI origin, a hint, one short key line and a native `details` "Keyboard shortcuts" with the full list.
+- **Layers** is a short strip: three numbered notes beside one real frame with three square markers outside the picture (hidden on phones; the numbered list stays).
+- **Timeline** ("DON'T GUESS. FIND IT.") shows a sharp 2x crop of the ruler, the preview frame and the time, with enough picture above for context (1120×260 CSS px, recorded at 2240×520), plus a dedicated narrow fragment (343×300) on phones. Two recordings, silent, no autoplay, started by the button under them ("Recorded from the player."); the button drives whichever clip is visible. Read, Preview and Jump are three ruled captions, not cards.
+- **Responsive** ("LESS SPACE. SAME CONTROL.") shows the two real narrow states side by side in one grid with the text: playing (343 px player in a 375 px window) and settings open (288 px player in a 320 px window). Sizes are a secondary mono caption. The text states the real arrangement: the ruler keeps its row beside Play, the time and the other buttons go to a second row.
+- **States** is a full-width black band: a numbered list at the left and one large frame at the right, with the sentence under it. The selected state is a white fill; the keyboard focus is a separate 3 px outline with a 4 px offset. Crops are honest and at one scale: focus, settings and captions show the panel and the picture above it; restored, loading and error show the whole frame. Phones: a 2-column list above the frame (numbers hidden under 480 px so Ukrainian labels fit).
+- **Use** is white again: "YOUR FILM. YOUR VIEWPORT.", two links (View source, Open workbench), and two `details` blocks, "Integration example" (the checked example in a keyboard-focusable block with its own scroll, max 420 px) and "Testing & limitations" (Checked, Known limitations). The footer carries credits, the AI origin of the film, "a demonstration, not a client project", and the licenses.
+- Copy lives in `apps/preview/src/demo/copy.ts` (EN and UK); styles in `demo.css` (first screen) and `showcase.css`. No new dependency, no change to the player.
+
+**Checks (Chrome on Windows, headless; viewport = window width, player width measured):**
+
+| Window | Player | h1 | Horizontal scroll | Console errors |
+| --- | --- | --- | --- | --- |
+| 320 | 288 | 34 px | none (EN, UK) | none |
+| 375 | 343 | 40.5 px | none | none |
+| 720 (narrow-layout check, not a browser zoom) | 677 | 80 px | none | none |
+| 768 | 722 | 85 px | none | none |
+| 1440 | 1120 | 104 px | none | none |
+
+Also: the gallery works by keyboard (Tab, Space), selected and focus look different, every state image loads; the recording starts and stops and the main player stays idle; on 375 only the narrow clip plays; both `details` open from the keyboard, the code block is focusable and scrolls; all links point at real targets; typecheck and build pass. A 720 px window was used as a check of the narrow layout; it is not the browser's own 200% zoom, which has not been tested. Not tested: Safari, Firefox, a real phone, a screen reader, a real reduced-motion setting, real browser zoom at 200%. The reference sites (awwwards pages) were not opened; the composition follows the brief's description, not an examination of those sites.
+
+## Hero fit (v12)
+
+- Desktop (900 px and wider): the slogan (60 px) and the lead share a row; spacing is tight. The page measures where the player starts (`--demo-above`, set from the hero's height) and CSS limits the stage width to `(100dvh − above − 28px − 128px) × 16/9`, never below 640 px and never above the column. The 128 px is the title strip plus the control panel, so the whole player is inside the window with a 28 px reserve. The picture keeps 16:9 (measured 1.778), the panel is still 88 px, nothing is scaled, cropped or hidden, and no `overflow: hidden` is used.
+- Measured (Chrome): 1440×900 → player 990 px, bottom at 872; 1440×800 → 812 px, bottom 772; 1280×720 → 670 px, bottom 692; 1024×768 → 756 px; 900×700 → 640 px (the minimum). A shorter window than the minimum allows scrolls normally. Phones and narrow windows are unchanged (375 px: 343 px player, panel 150 px). No horizontal scroll at 320, 375, 768, 900, 1024, 1280, 1440; no console errors.
+- State pictures are now tight real crops captured at 2x: Focus (the left half of the panel with the black frame on the pin), Settings (the menu and the right half of the panel), Restored (the right half of the title strip showing "Resumed 19:40"), Error (the dialog with black around it); Captions and Loading keep the whole frame. The Focus note was corrected: on the ruler focus is a heavy black frame around the pin; buttons get the double ring.
+- Layers: "Playback controls stay below the picture." (UK: "Керування відтворенням лишається під зображенням."). Responsive: the mobile text is one sentence; the sentence about the settings sheet shows from 720 px up.
+
+## Polish of v12 (v13)
+
+- **One hero block.** Header (labels and EN | UK), slogan, lead, player and the captions under it share one width (`.demo-hero`). The width is limited by the window's height as before, so the language switch, the lead, the player and the caption block end at the same right edge (checked: 1156 px at 1440×900, 999 px at 1440×800, EN and UK). The rest of the page keeps the wider column. The slogan lines never wrap and the slogan size also follows the window's height (`min(11.8cqw, 60px, 6.5dvh)`), which removed a feedback loop where a wrapped Ukrainian slogan made the header taller and the player narrower (a 640 px player at 800 px high in UK). Results: 1440×900 → player 996 px, panel bottom 872; 1440×800 → 839 px, bottom 772; the same in EN and UK. The picture stays 16:9, the panel stays 88 px, nothing is scaled, cropped or hidden.
+- **One short hint.** "Play. Scrub. Find your moment." plus the "Keyboard shortcuts" details (keyboard accessible). The always-visible key line is gone on every size.
+- **Layers.** Number in its own narrow column; the name on one line, the note on the next: Title (Name, chapter and playback status.), Picture (The film, with playback controls below it.), Controls (One dedicated surface for playback.). Ukrainian equivalents added.
+- **Timeline notes.** Compact rows: "01 Read — See your position.", "02 Preview — Check the frame.", "03 Jump — Choose a chapter."; on phones one row each (number and name together, the note beside), three columns on wider screens.
+- **Responsive.** Text: "The ruler keeps its space. The other controls move to a second row." Captions: "Two rows. One clear timeline." and "Settings stay inside the player."; window and player widths stay as a secondary mono line.
+- **Gallery.** The Focus crop is unchanged. Focus note: "A clear focus marker on the ruler. A contrasting ring on buttons." The line "Player captures shown in English." (UK: "Кадри плеєра показано англійською.") appears once under the gallery instead of in every state. The real focus style of the player was not changed.
+- **Footer.** Three small groups (Design & code: Natalia Trusova · Apache 2.0; Typography: Onest + IBM Plex Mono · OFL; Demo film: Scarlet Walk · AI-generated with Kling 2.6 Pro via Flora), a details block "Demo footage & rights" (the film's terms of reuse depend on the generator's terms and are not confirmed here; a demonstration, not a client project; Video.js under its own license), the license links, and one quiet contest line.
+- **Checks** (Chrome on Windows): 320, 375, 720 (a narrow-layout check, not browser zoom), 768 and 1440 px, EN and UK, no horizontal scroll and no console errors; the gallery, both details blocks and the footer details work by keyboard; the recording starts and stops; the player's own functions were not touched; typecheck and build pass. Not tested: Safari, Firefox, a real phone, a screen reader, a real reduced-motion setting.

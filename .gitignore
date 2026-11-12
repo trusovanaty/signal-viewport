@@ -14,3 +14,11 @@ Video.js Skins Challenge*.md
 videojs-contest.pdf
 Video.js
 design/screenshots/
+
+# Local-only long video test (a generated 36-minute file and its harness page)
+apps/preview/_local/
+apps/preview/long-test.html
+apps/preview/src/long-test/
+
+# Raw video working files (the finished film is in apps/preview/public/media)
+design/video/

@@ -23,6 +23,13 @@ export interface Copy {
   /** Accessible name of the settings button; `{speed}` is the current speed, e.g. 1.5×. */
   settingsWithSpeed: string;
   settings: string;
+  /** Go to time: the button's accessible name, the input's placeholder and the two error texts (`{max}` is the video's length). */
+  goToTime: string;
+  goToPlaceholder: string;
+  goToFormat: string;
+  goToRange: string;
+  /** Announced after a jump; `{time}` is the new position. */
+  wentTo: string;
   /** Label before a technical error detail (the engine's own message, which is not translated). */
   details: string;
 }
@@ -40,6 +47,11 @@ const en: Copy = {
   nowPlaying: 'Now playing {height}p',
   settingsWithSpeed: 'Playback settings, speed {speed}',
   settings: 'Playback settings',
+  goToTime: 'Go to time',
+  goToPlaceholder: 'm:ss',
+  goToFormat: 'Use m:ss or h:mm:ss',
+  goToRange: 'Past the end. Max {max}',
+  wentTo: 'Went to {time}',
   details: 'Details',
 };
 
@@ -56,6 +68,11 @@ const uk: Copy = {
   nowPlaying: 'Зараз відтворюється {height}p',
   settingsWithSpeed: 'Налаштування відтворення, швидкість {speed}',
   settings: 'Налаштування відтворення',
+  goToTime: 'Перейти до часу',
+  goToPlaceholder: 'х:сс',
+  goToFormat: 'Формат: х:сс або г:хх:сс',
+  goToRange: 'Після кінця. Максимум {max}',
+  wentTo: 'Перехід на {time}',
   details: 'Деталі',
 };
 
@@ -107,6 +124,8 @@ export function useCopy() {
       }
     },
     resumedText: (time: string) => fill(own.resumed, { time }),
+    goToRangeText: (max: string) => fill(own.goToRange, { max }),
+    wentToText: (time: string) => fill(own.wentTo, { time }),
     nowPlayingText: (height: number) => fill(own.nowPlaying, { height }),
     settingsLabel: (speed: string | null) => (speed ? fill(own.settingsWithSpeed, { speed }) : own.settings),
   };

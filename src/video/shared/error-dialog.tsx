@@ -74,7 +74,7 @@ export function ErrorDialog() {
         <ErrorDialogPrimitive.Description className={'text-[calc(var(--media-spacing)*3.5)]'}>
           <ErrorText />
         </ErrorDialogPrimitive.Description>
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
           {/* Retry first: it is the useful next step. Closing the message does not recover the source. */}
           <button
             type="button"

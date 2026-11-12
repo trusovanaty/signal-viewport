@@ -1,32 +1,62 @@
 /*
- * Showcase sections below the player. Every selector starts with .sc-, so nothing here can reach the player's own
- * buttons, video, or svg. White page, black type, thin rules; the red of the player is the one color object.
+ * Showcase sections below the player. Every selector starts with .sc- (or .demo- in demo.css), so nothing here can reach
+ * the player's own buttons, video, or svg. White page, black type, thin rules; one full-width black band for the states.
+ * Three scales: the wide player and strips (up to 1120 px), large interface fragments, and compact text columns.
  */
 .sc-section {
-  margin-top: 40px;
-  padding-top: 20px;
+  margin-top: clamp(48px, 7vw, 88px);
+  padding-top: 24px;
   border-top: 2px solid #000;
   display: grid;
-  gap: 20px;
+  gap: 28px;
 }
 
 .sc-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 8px 32px;
-  align-items: start;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 12px clamp(24px, 4vw, 64px);
+  align-items: end;
 }
-.sc-head h2 {
+.sc-head h2,
+.sc-responsive-text h2 {
   margin: 0;
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(34px, 6vw, 76px);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
-.sc-head p {
+.sc-head p,
+.sc-responsive-text p,
+.sc-layers-text p {
   margin: 0;
-  font-size: 16px;
+  max-width: 34em;
+  font-size: 17px;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 26px;
+}
+.sc-h2--small {
+  margin: 0 0 12px;
+  font-size: clamp(26px, 3.2vw, 38px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.sc-num {
+  font-family: var(--demo-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.sc-muted {
+  color: #8c8c8c;
+}
+.sc-tech {
+  display: block;
+  margin-top: 4px;
+  color: #4d4d4d;
+  font-family: var(--demo-mono);
+  font-size: 13px;
 }
 
 .sc-section img,
@@ -36,116 +66,248 @@
   height: auto;
 }
 .sc-frame,
-.sc-layers figure,
-.sc-clip {
+.sc-clip,
+.sc-layers-frame,
+.sc-shot {
   margin: 0;
 }
-.sc-frame img,
-.sc-clip video,
-.sc-layers img {
-  width: 100%;
-  background: #000;
-}
-.sc-frame figcaption,
-.sc-clip figcaption {
-  margin-top: 8px;
-  font-size: 14px;
-  line-height: 20px;
-}
-.sc-frame figcaption b,
-.sc-clip figcaption {
-  font-weight: 600;
-}
-.sc-clip figcaption {
-  font-family: var(--demo-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.sc-muted {
-  color: var(--demo-muted);
-}
-
-/* Layers: the real frame, with three labels in a rail beside it. The rail never covers the picture. */
-.sc-layers {
-  margin: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 200px;
-  gap: 0 20px;
-}
-.sc-rail {
-  position: relative;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.sc-rail li {
-  position: absolute;
-  left: 0;
-  right: 0;
-  padding-left: 16px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  border-top: 2px solid #000;
-  padding-top: 4px;
-}
-.sc-rail li::before {
-  content: attr(data-n);
-  position: absolute;
-  left: 0;
-  top: 4px;
-  font-family: var(--demo-mono);
-  font-size: 12px;
-  font-weight: 500;
-}
-/* Heights follow the frame: title strip 0-6%, picture 6-87%, control strip 87-100%. */
-.sc-rail li:nth-child(1) {
-  top: 0;
-}
-.sc-rail li:nth-child(2) {
-  top: 40%;
-}
-.sc-rail li:nth-child(3) {
-  top: 88%;
-}
-
-.sc-trio {
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px 32px;
-}
-.sc-trio dt {
-  font-weight: 600;
-  font-size: 16px;
-}
-.sc-trio dd {
-  margin: 0;
+.sc-frame figcaption {
+  margin-top: 10px;
   font-size: 15px;
   line-height: 22px;
 }
 
-.sc-narrow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 343px));
-  gap: 24px 32px;
-  align-items: start;
+/* ---- Layers: a short text column beside one real frame, with three markers outside the picture ---- */
+.sc-layers {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 24px clamp(24px, 4vw, 56px);
+  align-items: center;
 }
-.sc-narrow .sc-frame img {
-  width: auto;
-  max-width: 100%;
+.sc-legend {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 24px;
+}
+.sc-legend li {
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  align-items: baseline;
+  border-top: 1px solid #000;
+  padding-top: 8px;
+}
+.sc-legend-text {
+  display: grid;
+  gap: 2px;
+}
+.sc-legend-text b {
+  font-size: 18px;
+  font-weight: 600;
+}
+.sc-layers-frame {
+  position: relative;
+}
+.sc-layers-frame img {
+  width: 100%;
+  background: #000;
+}
+/* Heights follow the frame: title strip, picture, control strip. */
+.sc-mark {
+  position: absolute;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: #fff;
+  font-family: var(--demo-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.sc-mark::after {
+  content: attr(data-n);
+}
+.sc-mark[data-n='1'] {
+  top: calc(2.7% - 14px);
+}
+.sc-mark[data-n='2'] {
+  top: calc(46% - 14px);
+}
+.sc-mark[data-n='3'] {
+  top: calc(93.5% - 14px);
 }
 
-/* Gallery switches: plain buttons, a pressed state with the square mark, no tabs semantics. */
-.sc-toggles {
+/* ---- Timeline: a wide, sharp strip of the interface, and a narrow one for phones ---- */
+.sc-clip video {
+  width: 100%;
+  background: #000;
+}
+.sc-clip-narrow {
+  display: none !important;
+}
+.sc-clip-bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 12px;
+  font-family: var(--demo-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sc-trio {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px clamp(20px, 4vw, 48px);
+}
+.sc-trio > div {
+  border-top: 1px solid #000;
+  padding-top: 10px;
+}
+.sc-trio dt {
+  font-size: 20px;
+  font-weight: 600;
+}
+.sc-trio dd {
+  margin: 4px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* ---- Responsive: the text and two real narrow states in one grid ---- */
+.sc-responsive {
+  grid-template-columns: minmax(0, 1fr) 343px 288px;
+  gap: 28px clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+.sc-responsive-text h2 {
+  font-size: clamp(30px, 3.4vw, 48px);
+}
+.sc-responsive-text {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.sc-responsive .sc-frame img {
+  width: 100%;
+  background: #000;
+}
+.sc-responsive .sc-frame:nth-of-type(1) {
+  max-width: 343px;
+}
+.sc-responsive .sc-frame:nth-of-type(2) {
+  max-width: 288px;
+}
+
+/* ---- States: one black band, a list on the left, one large frame on the right ---- */
+.sc-band {
+  margin-top: clamp(48px, 7vw, 88px);
+  background: #000;
+  color: #fff;
+}
+.sc-band .sc-section {
+  box-sizing: border-box;
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px) var(--demo-gutter) clamp(40px, 6vw, 72px);
+  border-top: 0;
+}
+.sc-band .sc-head {
+  grid-template-columns: minmax(0, 1fr);
+}
+.sc-states-body {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+.sc-toggles {
+  display: grid;
   gap: 8px;
 }
-.sc-toggles button,
+.sc-toggles button {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  align-items: baseline;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 2px solid #fff;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  font: 600 19px/1.1 var(--signal-font);
+  text-align: left;
+  cursor: pointer;
+}
+.sc-toggles button[aria-pressed='true'] {
+  background: #fff;
+  color: #000;
+}
+.sc-toggles button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+.sc-shot-box {
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid #444;
+}
+.sc-shot-box img {
+  width: 100%;
+}
+.sc-shot figcaption {
+  margin-top: 12px;
+  max-width: 46em;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* ---- Use ---- */
+.sc-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+}
+.sc-linkbtn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+  font: 600 18px/1 var(--signal-font);
+  text-decoration: none;
+}
+.sc-links .sc-linkbtn:first-child {
+  background: #000;
+  color: #fff;
+}
+.sc-linkbtn:focus-visible,
+.sc-link:focus-visible,
+.sc-btn:focus-visible,
+.sc-details summary:focus-visible,
+.sc-code:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 3px;
+}
 .sc-btn {
+  box-sizing: border-box;
   min-height: 44px;
   padding: 0 16px;
   border: 2px solid #000;
@@ -153,59 +315,97 @@
   background: #fff;
   color: #000;
   font: 600 15px/1 var(--signal-font);
+  letter-spacing: 0;
+  text-transform: none;
   cursor: pointer;
 }
-.sc-clip-bar {
+.sc-details {
+  border-top: 2px solid #000;
+}
+.sc-details summary {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px 16px;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
 }
-.sc-toggles button[aria-pressed='true'] {
-  background: #000;
-  color: #fff;
+.sc-details summary::-webkit-details-marker {
+  display: none;
 }
-.sc-toggles button:focus-visible,
-.sc-btn:focus-visible,
-.sc-link:focus-visible,
-.sc-code:focus-visible,
-.sc-clip video:focus-visible {
-  outline: 3px solid #000;
-  outline-offset: 3px;
+.sc-details summary::after {
+  content: '+';
+  font-family: var(--demo-mono);
+  font-size: 22px;
 }
-
+.sc-details[open] > summary::after {
+  content: '−';
+}
+.sc-details--small {
+  margin-top: 8px;
+  border-top: 1px solid #000;
+}
+.sc-details--small summary {
+  min-height: 44px;
+  font-size: 15px;
+}
+.sc-code {
+  box-sizing: border-box;
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  max-height: 420px;
+  overflow: auto;
+  border: 2px solid #000;
+  font: 500 13px/20px var(--demo-mono);
+  font-synthesis: none;
+  white-space: pre;
+}
 .sc-lists {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 24px 32px;
+  gap: 24px 40px;
+  padding-bottom: 20px;
 }
 .sc-lists h3 {
   margin: 0 0 8px;
   font-size: 16px;
   font-weight: 600;
 }
-.sc-lists ul {
+.sc-lists ul,
+.sc-footer ul {
   margin: 0;
   padding: 0 0 0 18px;
   list-style: square;
   font-size: 15px;
   line-height: 22px;
 }
-.sc-lists li + li {
+.sc-lists li + li,
+.sc-footer li + li {
   margin-top: 6px;
 }
-.sc-lists p {
-  margin: 12px 0 0;
+.sc-footer {
+  margin-top: clamp(40px, 6vw, 72px);
+  padding: 24px 0 56px;
+  border-top: 2px solid #000;
 }
-
-.sc-code {
-  margin: 0;
-  padding: 12px 16px;
-  overflow-x: auto;
-  border: 2px solid #000;
-  font: 500 13px/20px var(--demo-mono);
-  font-synthesis: none;
-  white-space: pre;
+.sc-footer h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.sc-footer ul {
+  max-width: 60em;
+  font-size: 14px;
+}
+.sc-licenses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 16px 0 0;
+  font-size: 14px;
 }
 .sc-link {
   color: #000;
@@ -214,29 +414,132 @@
   text-underline-offset: 3px;
   text-decoration-thickness: 2px;
 }
-.sc-licenses {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 20px;
+
+/* ---- Narrower windows ---- */
+@media (max-width: 1019.98px) {
+  .sc-responsive {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .sc-responsive-text {
+    grid-column: 1 / -1;
+  }
+  .sc-responsive .sc-frame:nth-of-type(n) {
+    max-width: none;
+  }
+  .sc-responsive .sc-frame img {
+    width: auto;
+    max-width: 100%;
+  }
+}
+@media (max-width: 899.98px) {
+  .sc-states-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-toggles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 719.98px) {
+  .sc-head,
+  .sc-layers,
+  .sc-lists,
+  .sc-trio,
+  .sc-responsive {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-head {
+    align-items: start;
+  }
+  .sc-mark {
+    display: none;
+  }
+  .sc-clip-wide {
+    display: none !important;
+  }
+  .sc-clip-narrow {
+    display: block !important;
+    max-width: 420px;
+  }
+  .sc-toggles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sc-toggles button {
+    font-size: 17px;
+    padding: 10px 12px;
+  }
+}
+@media (max-width: 479.98px) {
+  .sc-toggles button {
+    display: block;
+    font-size: 16px;
+    padding: 10px;
+    overflow-wrap: anywhere;
+  }
+  .sc-toggles .sc-num {
+    display: none;
+  }
+}
+
+
+/* Timeline notes on narrow screens: one compact row each, number and name together, the note beside it. */
+@media (max-width: 719.98px) {
+  .sc-trio {
+    gap: 0;
+  }
+  .sc-trio > div {
+    display: grid;
+    grid-template-columns: minmax(7.2em, auto) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+  }
+  .sc-trio dt {
+    font-size: 18px;
+  }
+  .sc-trio dd {
+    margin: 0;
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+.sc-captured {
+  margin: 4px 0 0;
+  color: #9a9a9a;
   font-size: 14px;
 }
 
+/* Footer: small groups instead of a bulleted list. */
+.sc-groups {
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 32px;
+}
+.sc-groups dt {
+  color: #4d4d4d;
+  font-family: var(--demo-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.sc-groups dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.sc-rights p {
+  margin: 0 0 8px;
+  max-width: 54em;
+  font-size: 14px;
+  line-height: 21px;
+}
+.sc-contest {
+  margin: 14px 0 0;
+  color: #4d4d4d;
+  font-size: 14px;
+}
 @media (max-width: 719.98px) {
-  .sc-head,
-  .sc-lists,
-  .sc-trio {
+  .sc-groups {
     grid-template-columns: minmax(0, 1fr);
-  }
-  /* The rail becomes a plain numbered list under the frame. */
-  .sc-layers {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-  }
-  .sc-rail {
-    display: grid;
-    gap: 8px;
-  }
-  .sc-rail li {
-    position: static;
   }
 }

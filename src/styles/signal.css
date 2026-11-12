@@ -302,6 +302,95 @@
   font-weight: 500;
 }
 
+/* ---- Go to time: the elapsed time is a button; pressing it opens a small field in the same place ---- */
+.signal-goto-cell {
+  display: inline-flex;
+  align-items: baseline;
+  position: relative;
+}
+.signal-goto-button {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-block;
+  cursor: pointer;
+  /* A 44 px tall target around the number without changing the row's height. */
+  padding-block: 12px;
+  margin-block: -12px;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+}
+.signal-goto-button:hover {
+  text-decoration-line: underline;
+}
+.signal-goto-button:focus-visible {
+  text-decoration-line: underline;
+  outline: 3px solid var(--signal-paper);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px var(--signal-ink);
+}
+.signal-goto-button[data-open] {
+  visibility: hidden;
+}
+/* Laid over the readout, so opening it never changes the size of the row or the panel. */
+.signal-goto {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  display: flex;
+}
+.signal-goto-input {
+  box-sizing: border-box;
+  width: 9.5ch;
+  min-width: 0;
+  height: 36px;
+  padding: 0 6px;
+  border: 2px solid var(--signal-ink);
+  border-radius: 0;
+  background: var(--signal-paper);
+  color: var(--signal-ink);
+  font: inherit;
+  font-size: 18px;
+  letter-spacing: 0;
+  outline: none;
+}
+/* While the field is open the separator and total are hidden (not removed), so no half-covered digits show. */
+.signal-time:has(.signal-goto-input) > :nth-child(n + 2) {
+  visibility: hidden;
+}
+/* Narrow players: a slightly smaller field, still laid over the readout. */
+@container media-root (max-width: 559.98px) {
+  .signal-goto-input {
+    width: 8.5ch;
+    font-size: 16px;
+  }
+}
+.signal-goto-input::placeholder {
+  color: #5a5a5a;
+}
+.signal-goto-input:focus-visible {
+  outline: 3px solid var(--signal-paper);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--signal-ink);
+}
+/* The message sits on the edge of the picture above the panel, so the panel never changes height while typing. */
+.signal-goto-error {
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  z-index: 5;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+  font-family: var(--signal-mono);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
 /* ---- Time ruler (the seek slider) ---- */
 .signal-ruler {
   position: relative;

@@ -1,8 +1,9 @@
-/* Showcase page, first screen: a compact introduction and the one real player. Sections below live in showcase.css. */
+/* Showcase page, first screen: a strong headline and the one real player. Sections below live in showcase.css. */
 :root {
   color-scheme: light;
   --demo-ink: #000000;
   --demo-muted: #4d4d4d;
+  --demo-gutter: clamp(16px, 3vw, 32px);
   --signal-font: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   /* The same local IBM Plex Mono as the skin (loaded by the skin's fonts.css). */
   --demo-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
@@ -19,19 +20,20 @@ body {
   box-sizing: border-box;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 48px) 64px;
 }
 
-.demo-wrap {
+/* The content column: about 1184 px with its gutters, so the player is up to 1120 px wide. */
+.sc-wrap {
+  box-sizing: border-box;
   width: 100%;
-  max-width: 60rem;
+  max-width: 1184px;
   margin: 0 auto;
-  display: grid;
-  gap: 16px;
+  padding: clamp(10px, 1.6vw, 20px) var(--demo-gutter) 0;
 }
 
 .demo-player {
   width: 100%;
+  margin-top: clamp(14px, 2vw, 22px);
 }
 
 /* Player elements only provide state; the skin inside them is the box that gets sized. */
@@ -46,72 +48,175 @@ live-audio-player {
 .demo-label,
 .demo-tag,
 .demo-hint,
-.demo-keys {
+.demo-lang a {
   font-family: var(--demo-mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   font-synthesis: none;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .demo-head {
-  display: grid;
-  gap: 8px;
+  container-type: inline-size;
+}
+.demo-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .demo-label {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 16px;
+  gap: 2px 20px;
   margin: 0;
 }
+.demo-lang {
+  display: flex;
+  flex: none;
+}
+.demo-lang a {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 2px solid #000;
+  color: #000;
+  text-decoration: none;
+}
+.demo-lang a + a {
+  margin-left: -2px;
+}
+.demo-lang a[aria-current='true'] {
+  background: #000;
+  color: #fff;
+}
+.demo-lang a:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+/* The slogan is sized by the width of its own container, so the longest Ukrainian line fits at 288 px and still reaches ~104 px. */
 .demo-tagline {
-  margin: 0;
-  font-size: clamp(26px, 4.4vw, 40px);
+  margin: clamp(14px, 2.4vw, 28px) 0 12px;
+  font-size: clamp(30px, 11.8cqw, 104px);
   font-weight: 600;
-  line-height: 1.12;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 .sc-line {
   display: block;
 }
 .demo-lead {
   margin: 0;
-  max-width: 44rem;
-  font-size: 17px;
+  max-width: 34em;
+  font-size: clamp(17px, 1.6vw, 21px);
   font-weight: 500;
-  line-height: 24px;
+  line-height: 1.4;
 }
 
+/* Under the player: what is playing, how to try it, the short key line, and the full list on demand. */
 .demo-credit {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 32px;
+  margin-top: 14px;
   font-size: 15px;
   line-height: 22px;
 }
-.demo-credit strong {
+.demo-credit-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.demo-credit-main strong {
+  font-size: 18px;
   font-weight: 600;
 }
-.demo-credit p {
+.demo-about {
   flex-basis: 100%;
-  margin: 0;
+  max-width: 34em;
 }
 .demo-tag {
   display: inline-block;
   padding: 0 6px;
   border: 2px solid #000;
 }
-.demo-hint {
-  margin-top: 8px !important;
+.demo-credit-keys p {
+  margin: 0;
 }
 .demo-keys {
-  flex-basis: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 20px;
-  list-style: none;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 6px;
+}
+.demo-keys > div {
+  display: grid;
+  grid-template-columns: minmax(7.5em, 0.45fr) 1fr;
+  gap: 12px;
+}
+.demo-keys dt {
+  font-family: var(--demo-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.demo-keys dd {
   margin: 0;
-  padding: 0;
-  color: var(--demo-muted);
+}
+
+@media (max-width: 719.98px) {
+  .demo-credit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .demo-label {
+    flex-direction: column;
+  }
+}
+
+/* Desktop hero: one block (header, slogan, lead, player, captions) with one width. The slogan and the lead share a row, spacing is tight, and the player is as wide as the window's height
+   allows (16:9 picture + 40 px title strip + 88 px panel), so the red panel is inside the first screen. A shorter window
+   scrolls normally; the player never goes below 640 px wide. */
+@media (min-width: 900px) {
+  .sc-wrap {
+    padding-top: 12px;
+  }
+  .demo-head {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 40px;
+    align-items: end;
+  }
+  /* The slogan lines never wrap (that would make the header taller and the player narrower in a loop). */
+  .demo-tagline .sc-line {
+    white-space: nowrap;
+  }
+  .demo-top {
+    grid-column: 1 / -1;
+  }
+  .demo-tagline {
+    margin: 10px 0 0;
+    font-size: min(11.8cqw, 60px, 6.5dvh);
+  }
+  .demo-lead {
+    margin: 0 0 4px;
+    justify-self: end;
+    width: 100%;
+    max-width: 22em;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .demo-player {
+    margin-top: 14px;
+  }
+  .demo-hero {
+    width: min(100%, max(640px, calc((100dvh - var(--demo-above, 190px) - 28px - 128px) * 16 / 9)));
+  }
 }
