@@ -1,0 +1,862 @@
+/*
+ * Signal Viewport: a flat video viewport with a solid red transport panel below it.
+ * Unlayered on purpose, so these rules win over the themed Scaffold tokens in `@layer base.*`.
+ */
+
+.signal-skin {
+  --signal-red: #e52600; /* black 4.61:1, white 4.56:1 */
+  --signal-ink: #000000;
+  --signal-paper: #ffffff;
+  --signal-control: 48px; /* minimum touch target */
+  --signal-gap: 16px;
+  --signal-ruler-h: 56px;
+  --signal-rail-y: 32px; /* baseline of the ruler; ticks stand on it, labels hang below */
+  /* Local font files (src/fonts, SIL OFL; see its README). System fonts are only the fallback while they load or for
+     scripts the files do not cover. */
+  --signal-font: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --signal-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --media-ring: var(--signal-paper);
+  --media-accent-color: var(--signal-paper);
+  --media-font-family: var(--signal-font);
+
+  display: flex;
+  flex-direction: column;
+  background: var(--signal-red);
+  font-family: var(--signal-font);
+  font-weight: 500;
+  /* Only real weights are loaded; never let the browser fake a bold or an italic. */
+  font-synthesis: none;
+  color: var(--signal-ink);
+  border-radius: 0;
+}
+
+/*
+ * The aspect ratio belongs to the video, not to the whole skin: the panel adds its own height below it. A host that
+ * sets a ratio on `.media-skin` (the workbench does) would otherwise squeeze the video to nothing on small players.
+ * `--preview-player-ratio` is the workbench's ratio option; outside it the video is 16:9.
+ */
+.signal-skin {
+  aspect-ratio: auto !important;
+  height: auto;
+}
+
+.signal-skin:fullscreen {
+  --media-scale: 1;
+  height: 100%;
+}
+.signal-skin:fullscreen .signal-viewport {
+  aspect-ratio: auto;
+  flex: 1 1 0;
+}
+
+/* ---- Viewport: video only, nothing over it except transient feedback ---- */
+.signal-viewport {
+  anchor-name: --signal-viewport;
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: var(--preview-player-ratio, 16 / 9);
+  min-height: 0;
+  background: #000;
+  color: var(--signal-paper);
+  overflow: hidden;
+  /* Transient feedback over the video (volume, seek, status) gets a solid black plate, so white icons and text stay
+     readable on bright footage. Scoped here, so the panel buttons keep their own transparent background. */
+  --media-background: #000;
+}
+/*
+ * Captions. Scaffold lifts them by 80px while controls are visible, because its controls float over the picture. Ours
+ * sit below it, so the captions only keep a small margin above the bottom edge of the picture. The cues themselves use
+ * the skin's type and a solid black plate: white on black is 21:1 over any footage.
+ */
+.signal-skin {
+  --media-caption-controls-y: calc(var(--media-spacing) * -3);
+}
+.signal-viewport video::cue {
+  font-family: var(--signal-font);
+  font-weight: 500;
+  color: var(--signal-paper);
+  background-color: #000;
+  /* The browser sizes cues from the picture height (about 9px on a 320px player); never go below 14px. */
+  font-size: max(14px, 100%);
+}
+
+/* Whole frame visible, never cropped: black bars are the honest result of a ratio that differs from the video's. */
+.signal-viewport video {
+  object-fit: contain;
+}
+
+/* ---- Title strip: title left; chapter and status right ---- */
+.signal-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 40px;
+  padding: 0 var(--signal-gap);
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+  min-width: 0;
+}
+.signal-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--signal-font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.signal-bar-meta {
+  flex: none; /* the title gives way (with an ellipsis), the status never overflows into it */
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  font-family: var(--signal-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.signal-chapter {
+  min-width: 0;
+  max-width: 28ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.signal-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 9ch;
+  text-align: end;
+}
+.signal-status-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+/* Visually hidden live region (read by screen readers, not shown). */
+.signal-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/* Narrow players drop the chapter first, then the status; the title is only ever truncated. */
+@container media-root (max-width: 559.98px) {
+  .signal-chapter { display: none; }
+}
+@container media-root (max-width: 359.98px) {
+  .signal-bar-meta { display: none; }
+  /* A fresh "Resumed" notice or an error is worth the room: show the status, still without the chapter. */
+  .signal-bar-meta[data-notice],
+  .signal-bar:has(.signal-status-icon) .signal-bar-meta { display: flex; }
+}
+
+/* ---- Panel: play | timeline | time | cluster (volume, settings, PiP, fullscreen) ---- */
+.signal-panel {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--signal-gap);
+  background: var(--signal-red);
+  color: var(--signal-ink);
+  /* The mobile menu sheet anchors to the top edge of the panel. */
+  anchor-name: --signal-panel;
+}
+
+/* Narrow: row A is play + ruler, row B is time on the left and the control cluster on the right. */
+.signal-row--a {
+  display: grid;
+  grid-template-columns: var(--signal-control) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--signal-gap);
+}
+.signal-row--b {
+  display: flex;
+  flex-wrap: wrap; /* a long time (`1:05:30 / 2:00:00`) on a very narrow player moves the buttons to their own line */
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px var(--signal-gap);
+}
+.signal-cell--cluster { margin-inline-start: auto; }
+.signal-cell--ruler { min-width: 0; }
+
+/* Audio, settings, PiP and fullscreen are one cluster, so they sit closer than the other groups. */
+.signal-cell--cluster {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* PiP stays out of the narrow layout for now. */
+.signal-btn.signal-pip { display: none; }
+
+/*
+ * Compact narrow panel (probe, opt-in via `data-density="compact"` on the skin). Only tighter vertical spacing: the
+ * 48px buttons and the 56px ruler (its whole height is the seek target) are unchanged.
+ */
+@container media-root (max-width: 559.98px) {
+  .signal-skin[data-density='compact'] .signal-panel {
+    /* 12 + 56 (ruler) + 5 + 48 (buttons) + 11 = 132. The 5px row gap clears the 5px focus ring of the row-2 buttons. */
+    padding-block: 12px 11px;
+    gap: 5px;
+  }
+}
+
+@container media-root (min-width: 560px) {
+  .signal-panel {
+    display: grid;
+    grid-template-columns: var(--signal-control) minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--signal-gap);
+  }
+  /* One row: the two row wrappers dissolve and their children become the grid cells. */
+  .signal-row { display: contents; }
+  .signal-btn.signal-pip { display: grid; }
+}
+
+/* ---- Buttons ---- */
+.signal-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--signal-control);
+  height: var(--signal-control);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--signal-ink);
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--media-duration-fast, 100ms), color var(--media-duration-fast, 100ms);
+}
+.signal-btn--play {
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+}
+.signal-btn:hover {
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+}
+.signal-btn--play:hover {
+  background: var(--signal-paper);
+  color: var(--signal-ink);
+}
+
+.signal-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/*
+ * The player container takes focus first (it scopes the hotkeys). The Scaffold utility classes leave its outline at
+ * `none`, so the ring is set here: black outside the player on the page, white inside it in fullscreen.
+ */
+.signal-skin:focus-visible {
+  outline: 3px solid var(--signal-ink);
+  outline-offset: 3px;
+}
+.signal-skin:fullscreen:focus-visible {
+  outline-color: var(--signal-paper);
+  outline-offset: -6px;
+}
+
+/* Double focus ring: ink inner gap, white outer. Readable on red, black, and white. */
+.signal-btn:focus-visible {
+  outline: 3px solid var(--signal-paper);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--signal-ink);
+}
+
+/* ---- Time readout: elapsed leads, total is secondary ---- */
+.signal-time {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-family: var(--signal-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--signal-ink);
+}
+.signal-time > :nth-child(1) {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.signal-time > :nth-child(2),
+.signal-time > :nth-child(3) {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ---- Time ruler (the seek slider) ---- */
+.signal-ruler {
+  position: relative;
+  display: block;
+  height: var(--signal-ruler-h);
+  min-width: 0;
+  cursor: pointer;
+  touch-action: none;
+  container-type: inline-size;
+  container-name: ruler;
+  user-select: none;
+}
+.signal-ruler[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.signal-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.signal-ticks--base {
+  color: var(--signal-ink);
+}
+/*
+ * One position for the pin, the white rail fill and the white (played) ticks: the playback position, or the pointer
+ * while dragging. Everything that moves with it reads this value, so the parts can never disagree about where it is.
+ */
+.signal-ruler {
+  --signal-pos: var(--media-slider-fill, 0%);
+  --signal-glide: 250ms; /* about one timeupdate: playback advances as a glide, not in steps */
+}
+.signal-ruler[data-dragging] {
+  --signal-pos: var(--media-slider-pointer, var(--media-slider-fill, 0%));
+}
+.signal-ticks--played {
+  color: var(--signal-paper);
+  clip-path: inset(0 calc(100% - var(--signal-pos)) 0 0);
+}
+/* Gliding is only for playback and keyboard seeks; while dragging the parts follow the pointer immediately. */
+.signal-ruler:not([data-dragging]) .signal-ticks--played {
+  transition: clip-path var(--signal-glide) linear;
+}
+
+/* Ticks stand on the rail: short, thin minors and taller, heavier majors. */
+.signal-tick {
+  position: absolute;
+  bottom: calc(var(--signal-ruler-h) - var(--signal-rail-y));
+  width: 1px;
+  background: currentColor;
+}
+.signal-tick--minor { height: 7px; }
+.signal-tick--major { height: 15px; width: 2px; margin-left: -1px; }
+
+.signal-tick-label {
+  position: absolute;
+  /* Relative to the tick, which stands on the rail: 8px below the rail. */
+  top: calc(100% + 8px);
+  left: 0;
+  transform: translateX(-50%);
+  font-family: var(--signal-mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--signal-ink);
+}
+/* The first label starts at the left edge of the ruler. */
+.signal-tick:first-child .signal-tick-label {
+  transform: none;
+  left: -1px;
+}
+
+/* Baseline rail. */
+.signal-rail {
+  position: absolute;
+  inset-inline: 0;
+  top: var(--signal-rail-y);
+  height: 2px;
+  background: var(--signal-ink);
+}
+.signal-rail-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--signal-pos);
+  background: var(--signal-paper);
+}
+.signal-ruler:not([data-dragging]) .signal-rail-fill {
+  transition: width var(--signal-glide) linear;
+}
+
+/*
+ * Position marker: a white pin (triangle head, short stem) that stands on the rail. It covers the ticks and the rail
+ * only, never the label row, so it cannot be mistaken for a full-height divider. The whole ruler is the pointer
+ * target; the thumb is the focusable pin.
+ *
+ * The pin is ONE shape (a single clipped box), not a head plus a stem: two boxes were snapped to device pixels
+ * differently while it moved and looked out of step. It is placed with `left`, like the fill's `width`, so the pin and
+ * the fill are snapped the same way.
+ */
+.signal-playhead {
+  position: absolute;
+  top: 0;
+  height: calc(var(--signal-rail-y) + 6px);
+  left: calc(var(--signal-pos) - 10px); /* centered on the position: half of the 20px box */
+  width: 20px;
+  outline: none;
+  background: transparent;
+}
+.signal-ruler:not([data-dragging]) .signal-playhead {
+  transition: left var(--signal-glide) linear;
+}
+.signal-playhead::before {
+  content: '';
+  position: absolute;
+  inset: 0 3px; /* a 14px-wide shape centered in the 20px box */
+  background: var(--signal-paper);
+  /* head: triangle from the top corners to the stem; stem: 3px, centered on x=7. 7.86px is where the 3px stem meets
+     the triangle's edges. */
+  clip-path: polygon(0 0, 100% 0, 8.5px 7.86px, 8.5px 100%, 5.5px 100%, 5.5px 7.86px);
+}
+.signal-playhead:focus-visible {
+  outline: 3px solid var(--signal-ink);
+  outline-offset: 1px;
+}
+.signal-ruler:focus-visible {
+  outline: 3px solid var(--signal-ink);
+  outline-offset: 2px;
+}
+
+/* Pointer time: a black chip over the label row, so it never touches the video. */
+.signal-pointer-chip {
+  position: absolute;
+  bottom: 0;
+  height: 20px;
+  /* Fixed width (fits h:mm:ss) and our own clamp: the component's inline clamp measures the text without padding, so
+     the chip overflowed the ruler's right edge. */
+  width: 56px !important;
+  left: clamp(0px, calc(var(--media-slider-pointer, 0%) - 28px), calc(100% - 56px)) !important;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+  font-family: var(--signal-mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+.signal-ruler[data-pointing] .signal-pointer-chip,
+.signal-ruler[data-dragging] .signal-pointer-chip {
+  opacity: 1;
+}
+
+/*
+ * Frame under the pointer (from the storyboard track). It sits just above the ruler, clamped to the ruler's width so it
+ * never leaves the player, and only shows while pointing or dragging.
+ */
+.signal-thumb-frame {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: clamp(var(--signal-thumb-w, 160px) / 2, var(--media-slider-pointer, 0%), 100% - var(--signal-thumb-w, 160px) / 2);
+  width: var(--signal-thumb-w, 160px);
+  max-width: var(--signal-thumb-w, 160px);
+  transform: translateX(-50%);
+  background: var(--signal-ink);
+  border: 2px solid var(--signal-ink);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+}
+.signal-thumb-frame[data-hidden] {
+  display: none;
+}
+.signal-ruler[data-pointing] .signal-thumb-frame,
+.signal-ruler[data-dragging] .signal-thumb-frame {
+  opacity: 1;
+}
+.signal-thumb-img {
+  display: block;
+  width: 100%;
+}
+@container media-root (max-width: 559.98px) {
+  /* A container query styles the container's descendants, not the container itself, so the size is set on the frame. */
+  .signal-thumb-frame { --signal-thumb-w: 128px; }
+}
+
+/* Fewer markings on narrow rulers: drop minor ticks and every other label. */
+@container ruler (max-width: 300px) {
+  .signal-tick--minor { display: none; }
+  .signal-tick[data-alt] .signal-tick-label { display: none; }
+}
+
+/* ---- Audio: mute plus a quiet inline slider ---- */
+.signal-volume {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.signal-volume-slider {
+  position: relative;
+  display: none;
+  width: 64px;
+  height: var(--signal-control);
+  cursor: pointer;
+  touch-action: none;
+}
+.signal-volume-slider .signal-rail {
+  top: calc(50% - 1px);
+}
+.signal-volume-thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--media-slider-fill, 0%);
+  width: 16px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  outline: none;
+}
+.signal-volume-thumb::before {
+  content: '';
+  position: absolute;
+  inset-block: 5px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--signal-paper);
+}
+.signal-volume-thumb:focus-visible {
+  outline: 3px solid var(--signal-ink);
+  outline-offset: 0;
+}
+/* The inline slider only appears where the ruler can spare the room; the mute button is always there. */
+@container media-root (min-width: 840px) {
+  .signal-volume-slider { display: block; }
+}
+
+/* ---- Start / Replay: shown over the poster before the first play and over the last frame after the end ---- */
+.signal-start {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--media-duration-fast, 100ms), color var(--media-duration-fast, 100ms);
+}
+/* Mid-playback (playing or paused) the video stays uncovered. */
+.signal-start[data-started]:not([data-ended]) {
+  display: none;
+}
+.signal-start:hover {
+  background: var(--signal-paper);
+  color: var(--signal-ink);
+}
+.signal-start:focus-visible {
+  outline: 3px solid var(--signal-paper);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--signal-ink);
+}
+.signal-start-icon {
+  width: 40px;
+  height: 40px;
+}
+
+/* ---- Settings menu ---- */
+.signal-btn--menu {
+  width: auto;
+  min-width: var(--signal-control);
+  padding: 0 8px;
+  grid-auto-flow: column;
+  gap: 6px;
+}
+.signal-speed {
+  font-family: var(--signal-mono);
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.signal-btn--menu[aria-expanded='true'] {
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+}
+
+.signal-menu {
+  z-index: 60;
+  box-sizing: border-box;
+  min-width: 240px;
+  max-width: calc(100cqw - 24px);
+  max-height: min(var(--media-menu-available-height, 320px), 420px);
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--signal-ink);
+  color: var(--signal-paper);
+  font-family: var(--signal-font);
+  font-size: 15px;
+}
+/*
+ * Narrow players: a full-width sheet sitting on top of the panel instead of a small popover next to its trigger. The
+ * library positions the popover with CSS anchors; where those are supported we re-anchor it to the panel. Elsewhere the
+ * library's own placement is kept, just made as wide as the player allows.
+ */
+@container media-root (max-width: 559.98px) {
+  .signal-menu {
+    width: calc(100cqw - 24px);
+  }
+  @supports (top: anchor(top)) {
+    .signal-menu {
+      position-anchor: --signal-panel !important;
+      left: anchor(left) !important;
+      bottom: anchor(top) !important;
+      /* Never taller than the picture area above the panel: long lists scroll instead of leaving the player. */
+      max-height: anchor-size(--signal-viewport height) !important;
+      width: anchor-size(width) !important;
+      max-width: none !important;
+      translate: none !important;
+    }
+  }
+}
+.signal-menu-panel {
+  display: flex;
+  flex-direction: column;
+}
+/* A submenu replaces its parent view instead of stacking under it. */
+.signal-menu-panel[data-child-open] {
+  display: none;
+}
+.signal-menu-group {
+  display: flex;
+  flex-direction: column;
+}
+.signal-menu-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--signal-control);
+  padding: 0 16px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+/*
+ * Three different cues. Hover (real pointers only): the row inverts. Keyboard focus (:focus-visible): the row inverts and
+ * gets an inner ink frame. Selected: a bold label and a square mark (see below), never the fill. The row that receives
+ * focus automatically when a menu opens by touch or mouse is not :focus-visible, so it does not look selected.
+ */
+@media (hover: hover) {
+  .signal-menu-item:hover:not([aria-disabled='true']) {
+    background: var(--signal-paper);
+    color: var(--signal-ink);
+  }
+}
+.signal-menu-item:focus-visible {
+  background: var(--signal-paper);
+  color: var(--signal-ink);
+  outline: 3px solid var(--signal-ink);
+  outline-offset: -7px;
+}
+.signal-menu-item[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.signal-menu-back {
+  font-weight: 600;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--signal-paper);
+}
+.signal-menu-title {
+  flex: none;
+}
+.signal-menu-value {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--signal-mono);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+/* A long value (the current chapter title) stays on one line and is cut with an ellipsis. */
+.signal-menu-value-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.signal-menu-tier,
+.signal-menu-badge {
+  margin-inline-start: 6px;
+  font-family: var(--signal-mono);
+  font-size: 11px;
+}
+/* Selected radio item: a flat square, no color-only cue (the row also carries aria-checked). */
+.signal-menu-check {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  margin-inline-start: auto;
+}
+.signal-menu-item[aria-checked='false'] .signal-menu-check {
+  visibility: hidden;
+}
+.signal-menu-item[aria-checked='true'] {
+  font-weight: 600;
+}
+/* Chapters: start time (and frame, when the source has a storyboard) before the title. */
+.signal-menu-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.signal-chapter-lead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.signal-chapter-frame {
+  width: 64px;
+  max-width: 64px;
+  background: var(--signal-ink);
+  border: 1px solid currentColor;
+  overflow: hidden;
+}
+.signal-chapter-frame[data-hidden] {
+  display: none;
+}
+.signal-chapter-img {
+  display: block;
+  width: 100%;
+}
+.signal-chapter-time {
+  font-family: var(--signal-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-width: 4ch;
+}
+.signal-menu-reset {
+  border-top: 1px solid var(--signal-paper);
+  font-size: 14px;
+}
+.signal-menu-note {
+  padding: 12px 16px;
+  border-top: 1px solid var(--signal-paper);
+  font-family: var(--signal-mono);
+  font-size: 12px;
+}
+
+/* Error dialog: the technical detail sits under the friendly sentence, in the mono face and a smaller size. */
+.signal-error-detail {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--signal-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.signal-error-detail-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Small players: the picture is only ~180px tall, so the error dialog is compact and drops the technical line. */
+@container media-root (max-width: 559.98px) {
+  .signal-viewport [role="alertdialog"] {
+    padding: 12px;
+    gap: 6px;
+    width: calc(100% - 16px);
+    max-height: calc(100% - 8px);
+  }
+  .signal-viewport [role="alertdialog"] h2 {
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .signal-viewport [role="alertdialog"] p {
+    font-size: 12px;
+    line-height: 17px;
+  }
+  .signal-error-detail { display: none; }
+  .signal-viewport [role="alertdialog"] button {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 40px;
+    padding: 0 10px;
+  }
+}
+
+/* Short landscape fullscreen (phones): give the picture the height. */
+@media (max-height: 480px) {
+  .signal-skin:fullscreen .signal-bar {
+    display: none;
+  }
+}
+
+/*
+ * Narrow players. The speed number next to the settings icon would change the button's width ("1×" to "1.25×") and push
+ * the time around, so below the one-row breakpoint the trigger is the icon alone; the current speed stays in its
+ * accessible name and in the menu. On the narrowest players the time and side padding tighten a little so the time and
+ * the three buttons share one line (a very long time, `1:05:30 / 2:00:00`, still wraps the buttons to their own line).
+ */
+@container media-root (max-width: 559.98px) {
+  .signal-speed { display: none; }
+  .signal-btn--menu { min-width: var(--signal-control); padding: 0; }
+}
+@container media-root (max-width: 339.98px) {
+  .signal-panel { padding-inline: 12px; }
+  .signal-time { gap: 6px; }
+  .signal-time > :nth-child(1) { font-size: 20px; }
+  .signal-time > :nth-child(2),
+  .signal-time > :nth-child(3) { font-size: 13px; }
+  .signal-row--b { column-gap: 8px; }
+}
+
+/* Reduced motion: the skin only uses color transitions via tokens; make sure nothing else animates. */
+@media (prefers-reduced-motion: reduce) {
+  .signal-skin *,
+  .signal-skin *::before,
+  .signal-skin *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+}
+
+/* Forced colors: keep ruler and buttons visible. */
+@media (forced-colors: active) {
+  .signal-panel { background: Canvas; color: CanvasText; border-top: 1px solid CanvasText; }
+  .signal-btn, .signal-btn--play { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; forced-color-adjust: none; }
+  .signal-ticks--base, .signal-tick-label, .signal-time { color: CanvasText; }
+  .signal-ticks--played { color: Highlight; }
+  .signal-rail { background: CanvasText; }
+  .signal-rail-fill { background: Highlight; }
+  .signal-playhead::before, .signal-volume-thumb::before { background: Highlight; }
+}

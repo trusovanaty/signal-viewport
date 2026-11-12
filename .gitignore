@@ -1,0 +1,16 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Hosting CLIs keep their project links here.
+.vercel
+.netlify
+.wrangler
+
+# Working notes and contest material kept out of the public repository
+player-skin-research*.md
+Video.js Skins Challenge*.md
+videojs-contest.pdf
+Video.js
+design/screenshots/
