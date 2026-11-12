@@ -112,7 +112,7 @@ Sections: compact hero and the one real player; "The picture stays clear" (real 
 - Frames are captured from this build by driving the real player (focus by Tab, settings menu, captions on, restored position, stalled segments for loading, blocked playlist for error). Nothing is static HTML pretending to be a state. An hours-time frame was dropped because it could only be made by editing the text in the page.
 - Styles: `showcase.css`, every selector starts with `.sc-`; `demo.css` holds the first screen. The skin's CSS is untouched by the page.
 - Images have width and height and load lazily; the clip uses `preload="none"`. One skin and one clip video exist on the page; nothing plays on load.
-- Material line comes from `MATERIAL` (author empty, so no author line is shown). Links point only to real files: `index.html` (workbench) and the two OFL texts. No "View source" link and no code license line, because no repository address and no LICENSE file exist yet.
+- Material line comes from `MATERIAL` (author empty, so no author line is shown). Links point only to real targets: `index.html` (workbench), the two OFL texts, the public repository https://github.com/trusovanaty/signal-viewport (View source) and its Apache 2.0 LICENSE (© 2026 Trusova Natalia).
 
 ### Menu: focus is not selected
 

@@ -14,6 +14,7 @@ const params = new URLSearchParams(location.search);
 const LOCALE = (params.get('lang') ?? 'en').trim() || 'en';
 
 const SHOWCASE = './showcase/';
+const REPO = 'https://github.com/trusovanaty/signal-viewport';
 /** Measured player widths of the captured frames (a 375 px window holds a 343 px player, a 320 px window a 288 px one). */
 const FRAMES = { wide: 960, narrow: 343, narrowest: 288 };
 
@@ -72,6 +73,7 @@ interface Copy {
     text: string;
     exampleTitle: string;
     workbench: string;
+    source: string;
     creditsTitle: string;
     credits: string[];
   };
@@ -160,8 +162,10 @@ const COPY: Record<string, Copy> = {
       text: 'The skin is a React component. Wrap your media in it inside a Video.js player; the page you are reading is only a wrapper around the same example.',
       exampleTitle: 'The setup used on this page',
       workbench: 'Open workbench',
+      source: 'View source',
       creditsTitle: 'Credits and licenses',
       credits: [
+        'Skin design and code: Natalia Trusova, Apache License 2.0.',
         'Player framework: Video.js v10, used under its own license.',
         'Type: Onest and IBM Plex Mono, both SIL Open Font License 1.1.',
         'Demo footage: a Mux sample stream (NASA’s Cosmic Dawn trailer). Rights stay with their owners; it is shown only to demonstrate the skin.',
@@ -251,8 +255,10 @@ const COPY: Record<string, Copy> = {
       text: 'Скін — це компонент React. Обгорніть ним своє медіа всередині плеєра Video.js; ця сторінка — лише обгортка навколо того самого прикладу.',
       exampleTitle: 'Налаштування, що використане на цій сторінці',
       workbench: 'Відкрити робочий стенд',
+      source: 'Переглянути код',
       creditsTitle: 'Авторство та ліцензії',
       credits: [
+        'Дизайн і код скіна: Наталя Трусова, Apache License 2.0.',
         'Фреймворк плеєра: Video.js v10 за його власною ліцензією.',
         'Шрифти: Onest та IBM Plex Mono, обидва за SIL Open Font License 1.1.',
         'Демо-відео: зразок потоку Mux (трейлер NASA «Cosmic Dawn»). Права лишаються за власниками; відео показано лише для демонстрації скіна.',
@@ -482,6 +488,9 @@ function Use({ copy }: { copy: Copy['use'] }) {
           <p>
             <a className="sc-link" href="./index.html">
               {copy.workbench}
+            </a>{' '}
+            <a className="sc-link" href={REPO}>
+              {copy.source}
             </a>
           </p>
         </div>
@@ -493,6 +502,9 @@ function Use({ copy }: { copy: Copy['use'] }) {
             ))}
           </ul>
           <p className="sc-licenses">
+            <a className="sc-link" href={`${REPO}/blob/main/LICENSE`}>
+              Apache 2.0
+            </a>
             <a className="sc-link" href="./font-licenses/OFL-Onest.txt">
               OFL — Onest
             </a>{' '}
