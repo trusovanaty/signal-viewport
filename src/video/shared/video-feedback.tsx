@@ -2,7 +2,6 @@
 
 import { Poster as PosterPrimitive } from '@videojs/react';
 import { BufferingIndicator as BufferingIndicatorPrimitive, Controls } from '@videojs/react';
-import { SpinnerIcon as SpinnerIconPrimitive } from '@videojs/react/icons/scaffold';
 import type { ClassValue } from 'cn';
 
 import { cn, resolveClassName } from '@/lib/resolve-class-name';
@@ -25,8 +24,19 @@ export function BufferingIndicator({ className }: { className?: ClassValue } = {
         )
       }
     >
-      {/* Solid black plate: a bare white spinner has no guaranteed contrast over a bright frame. */}
-      <SpinnerIconPrimitive className={'size-12 bg-black p-3 text-white'} />
+      {/* The skin's own loading mark: a short piece of the ruler, with the pin stepping along its ticks. Black plate: it
+          keeps its contrast over a bright frame. The motion stops with prefers-reduced-motion (see signal.css). */}
+      <svg className="signal-loading" viewBox="0 0 64 64" width="96" height="96" aria-hidden="true" focusable="false">
+        <rect x="14" y="38" width="38" height="2" />
+        <rect x="14" y="26" width="2" height="12" />
+        <rect x="50" y="26" width="2" height="12" />
+        {[20, 26, 32, 38, 44].map((x) => (
+          <rect key={x} x={x} y="32" width="2" height="6" />
+        ))}
+        <g className="signal-loading-pin">
+          <path d="M9 21h12l-5 7v11h-2V28z" />
+        </g>
+      </svg>
     </BufferingIndicatorPrimitive>
   );
 }

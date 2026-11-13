@@ -9,10 +9,13 @@ export interface Copy {
   demoTag: string;
   about: string;
   hint: string;
+  view: { group: string; desktop: string; mobile: string };
+  theme: { group: string; red: string; mono: string };
+  source: string;
   keysTitle: string;
   keys: [string, string][];
-  local: { open: string; restore: string; note: string; notVideo: string; cannotPlay: string; region: string };
-  layers: { title: string; text: string; items: [string, string][]; alt: string };
+  local: { prompt: string; open: string; restore: string; hint: string; note: string; notVideo: string; cannotPlay: string; region: string };
+  layers: { title: string; text: string; items: [string, string][]; alt: string; caption: string };
   timeline: {
     title: string;
     text: string;
@@ -20,11 +23,15 @@ export interface Copy {
     play: string;
     pause: string;
     alt: string;
+    gotoAlt: string;
+    goto: string;
+    feature: { label: string; heading: string };
     items: [string, string][];
   };
   responsive: {
     title: string;
     text: string;
+    labels: [string, string];
     playing: string;
     sheet: string;
     windowPlayer: (window: number, player: number) => string;
@@ -32,11 +39,22 @@ export interface Copy {
   };
   states: {
     title: string;
+    text: string;
     group: string;
+    hint: string;
     labels: Record<StateKey, string>;
     notes: Record<StateKey, string>;
     alts: Record<StateKey, string>;
-    captured: string;
+  };
+  formats: { title: string; text: string; items: [string, string][] };
+  prefs: { title: string; text: string; items: [string, string][] };
+  keyboard: {
+    title: string;
+    text: string;
+    keysTitle: string;
+    keysText: string;
+    or: string;
+    focus: { heading: string; title: string; text: string; marker: string; button: string; markerAlt: string; buttonAlt: string };
   };
   use: {
     title: string;
@@ -45,10 +63,15 @@ export interface Copy {
     workbench: string;
     exampleTitle: string;
     testingTitle: string;
+    testingText: string;
+    languagesLine: string;
+    detailsTitle: string;
     checkedTitle: string;
     checked: string[];
-    limitsTitle: string;
-    limits: string[];
+    notTestedTitle: string;
+    notTested: string[];
+    notesTitle: string;
+    notes: string[];
   };
   footer: {
     groups: [string, string][];
@@ -67,17 +90,22 @@ export const COPY: Record<string, Copy> = {
     about: 'An AI-generated fashion film (Kling 2.6 Pro, made through Flora), used here as demo footage.',
     hint: 'Play. Scrub. Find your moment.',
     local: {
+      prompt: 'Try it with your own video.',
+      hint: 'Opens locally in your browser. Nothing is uploaded.',
       open: 'Open your video',
       restore: 'Restore demo',
-      note: 'Opened locally. Not uploaded.',
+      note: 'Opened locally in your browser. Nothing is uploaded.',
       notVideo: 'That file is not a video.',
       cannotPlay: 'This file could not be played in your browser. Choose another file or restore the demo.',
       region: 'Your video',
     },
+    view: { group: 'Player width', desktop: 'Desktop', mobile: 'Mobile' },
+    theme: { group: 'Player colour', red: 'Red', mono: 'Mono' },
+    source: 'Source',
     keysTitle: 'Keyboard shortcuts',
     keys: [
       ['Space, K', 'Play or pause'],
-      ['← →, J L', 'Seek back or forward'],
+      ['← →, J L', 'Seek 10 s back or forward'],
       ['0–9, Home, End', 'Jump to a point of the video'],
       ['↑ ↓', 'Volume'],
       ['M', 'Mute'],
@@ -87,22 +115,26 @@ export const COPY: Record<string, Copy> = {
       ['F', 'Fullscreen'],
     ],
     layers: {
-      title: 'The picture stays clear.',
+      title: 'Full frame.',
       text: 'Controls live on their own surface, not on top of the film.',
       items: [
-        ['Title', 'Name, chapter and playback status.'],
-        ['Picture', 'The film, with playback controls below it.'],
-        ['Controls', 'One dedicated surface for playback.'],
+        ['Title', 'Film title, chapter and playback status.'],
+        ['Picture', 'The control strip stays outside the film.'],
+        ['Controls', 'A dedicated surface for playback and navigation.'],
       ],
-      alt: 'The player before playback: a black title strip, the full picture, and a red control strip below it.',
+      alt: 'Interface anatomy: three layers of the player pulled apart a little. The black title strip, the film picture, and the red control strip.',
+      caption: 'Interface anatomy. Layers separated for clarity.',
     },
     timeline: {
-      title: 'Don’t guess.\nFind it.',
+      title: 'Time\ncontrol.',
       text: 'A readable ruler, frame previews and chapter navigation make the timeline more than a progress bar.',
       recorded: 'Recorded from the player.',
       play: 'Play recording',
       pause: 'Pause recording',
       alt: 'Recording of the pointer moving along the ruler, with a frame preview and the time following it.',
+      gotoAlt: 'The control panel with the time field open and 0:07 typed in it.',
+      goto: 'Click the time, type m:ss and press Enter: the player goes to that exact moment.',
+      feature: { label: 'Feature', heading: 'Type the time' },
       items: [
         ['Read', 'See your position.'],
         ['Preview', 'Check the frame.'],
@@ -110,8 +142,9 @@ export const COPY: Record<string, Copy> = {
       ],
     },
     responsive: {
-      title: 'Less space.\nSame control.',
-      text: 'The ruler keeps its space. The other controls move to a second row.',
+      title: 'Mobile\nadaptation',
+      text: 'The same player in a narrow window: the ruler keeps its place, the other buttons move to a second row, the settings open inside the player.',
+      labels: ['01 / PLAYBACK', '02 / SETTINGS'],
       playing: 'Two rows. One clear timeline.',
       sheet: 'Settings stay inside the player.',
       windowPlayer: (w, p) => `Window ${w} px · player ${p} px`,
@@ -121,26 +154,62 @@ export const COPY: Record<string, Copy> = {
       },
     },
     states: {
-      title: 'Not just\nthe first frame.',
+      title: 'Player states.',
+      text: 'Focus, menu, captions, resume, loading and error: not only the calm first frame.',
       group: 'Player states',
+      hint: 'Pick a state to see it on the player.',
       labels: { focus: 'Focus', settings: 'Settings', captions: 'Captions', restored: 'Restored', loading: 'Loading', error: 'Error' },
       notes: {
         focus: 'A clear focus marker on the ruler. A contrasting ring on buttons.',
-        settings: 'The menu shares the panel’s square geometry; selected is a mark, not a fill.',
+        settings: 'The menu shares the panel’s square geometry. The selected item is marked with a sign, not a fill.',
         captions: 'Captions sit above the control strip, never under it.',
-        restored: 'A saved position returns with a short “Resumed” note. Shown on a 36-minute copy: positions are saved for videos longer than 15 seconds.',
-        loading: 'A spinner on a black plate; the status says Buffering, not just a spinner.',
+        restored: 'A saved position returns with a short “Resumed” note. Shown on a 30-second copy: positions are saved for videos longer than 15 seconds.',
+        loading: 'A piece of the ruler on a black plate: the pin steps along the ticks. The status says Buffering, not just an icon.',
         error: 'An icon and words, never color alone, with Try again as the first action.',
       },
       alts: {
         focus: 'The seek ruler with the keyboard focus frame around the pin.',
         settings: 'The settings menu open above the control strip.',
         captions: 'Captions shown on the picture above the control strip.',
-        restored: 'The title strip reading Resumed 19:40 after a saved position was restored.',
-        loading: 'A spinner over a black picture while the video buffers.',
+        restored: 'The title strip reading Resumed 0:15 after a saved position was restored.',
+        loading: 'A small ruler with a pin over a black picture while the video buffers.',
         error: 'The error message with Try again and OK buttons.',
       },
-      captured: 'Player captures shown in English.',
+    },
+    formats: {
+      title: 'Any format',
+      text: 'The same skin and the same controls for wide, square and vertical video.',
+      items: [
+        ['16:9', 'Wide'],
+        ['1:1', 'Square'],
+        ['9:16', 'Vertical'],
+      ],
+    },
+    prefs: {
+      title: 'Preferences.',
+      text: 'The player remembers you, speaks your language and adapts to how you use it.',
+      items: [
+        ['Memory', 'Remembers speed, sound, caption language and the position of each video. One command resets it all.'],
+        ['Languages', 'The skin speaks English and Ukrainian; the rest follows the Video.js translations.'],
+        ['Accessibility', 'Styles for reduced motion and high contrast, and state changes announced to screen readers.'],
+        ['Touch', 'Double-tap the left or right side to seek, the centre to go fullscreen.'],
+      ],
+    },
+    keyboard: {
+      title: 'Navigation.',
+      text: 'Reach any moment: with the keys and with the focus.',
+      keysTitle: 'Shortcuts',
+      keysText: 'Every control works from the keyboard while the player is in focus.',
+      or: 'or',
+      focus: {
+        heading: 'Focus',
+        title: 'How to see keyboard focus',
+        text: 'Click the player, then press Tab to move from control to control. A frame always shows where you are. It appears for the keyboard, not for the mouse.',
+        marker: 'On the ruler: a black frame around the marker. The arrow keys move the marker.',
+        button: 'On a button: a white ring with a black edge. Space or Enter presses it.',
+        markerAlt: 'The ruler with a black keyboard focus frame around the marker.',
+        buttonAlt: 'The settings button with a white keyboard focus ring and a black edge.',
+      },
     },
     use: {
       title: 'Your film.\nYour viewport.',
@@ -148,23 +217,20 @@ export const COPY: Record<string, Copy> = {
       source: 'View source',
       workbench: 'Open workbench',
       exampleTitle: 'Integration example',
-      testingTitle: 'Testing & limitations',
+      testingTitle: 'Testing & compatibility',
+      testingText: 'Tested in Chrome on Windows. Safari and assistive technologies have not yet been tested.',
+      languagesLine: 'Interface languages: English / Ukrainian.',
+      detailsTitle: 'Testing details',
       checkedTitle: 'Checked',
-      checked: [
-        'Chrome on Windows, automated: window widths 320, 375, 720, 768 and 1440 px (720 px checks the narrow layout; it is not browser zoom), with no horizontal scroll and no overlapping controls.',
-        'Keyboard: every control reachable, focus ring visible, menus open, go back and close with Escape.',
-        'Touch menu in Chrome’s touch emulation: opening it does not mark a row as selected.',
-        'Type check and production build pass.',
+      checked: [],
+      notTestedTitle: 'Not tested',
+      notTested: [
+        'Safari.',
+        'A real screen reader (NVDA, JAWS, VoiceOver, TalkBack).',
+        'Browser zoom at 200%, and displays with fractional scaling (125%, 150%).',
       ],
-      limitsTitle: 'Known limitations',
-      limits: [
-        'Not tested in Safari or Firefox.',
-        'Not tested on a real phone; touch was only emulated.',
-        'Not tested with a screen reader.',
-        'The reduced-motion setting was not tested on a real system.',
-        'Browser zoom at 200% was not tested.',
-        'The interface strings exist in English and Ukrainian only.',
-      ],
+      notesTitle: 'How',
+      notes: ['The checks are automatic, in headless Chrome on Windows, with no manual session on a device.'],
     },
     footer: {
       groups: [
@@ -189,6 +255,8 @@ export const COPY: Record<string, Copy> = {
     about: 'Модний фільм, згенерований ШІ (Kling 2.6 Pro, через Flora), використаний тут як демонстраційне відео.',
     hint: 'Запустіть. Перемотайте. Знайдіть свою мить.',
     local: {
+      prompt: 'Спробуйте зі своїм відео.',
+      hint: 'Файл відкривається лише у вашому браузері. На сервер не надсилається.',
       open: 'Відкрити своє відео',
       restore: 'Повернути демо',
       note: 'Файл відкривається лише у вашому браузері. На сервер не надсилається.',
@@ -196,10 +264,13 @@ export const COPY: Record<string, Copy> = {
       cannotPlay: 'Цей файл не вдалося відтворити у вашому браузері. Оберіть інший файл або поверніть демо.',
       region: 'Ваше відео',
     },
+    view: { group: 'Ширина плеєра', desktop: 'Десктоп', mobile: 'Мобільний' },
+    theme: { group: 'Колір плеєра', red: 'Червоний', mono: 'Моно' },
+    source: 'Джерело',
     keysTitle: 'Клавіатурні скорочення',
     keys: [
       ['Пробіл, K', 'Відтворення або пауза'],
-      ['← →, J L', 'Перемотка назад або вперед'],
+      ['← →, J L', 'Перемотка на 10 с назад або вперед'],
       ['0–9, Home, End', 'Перехід до місця у відео'],
       ['↑ ↓', 'Гучність'],
       ['M', 'Без звуку'],
@@ -209,22 +280,26 @@ export const COPY: Record<string, Copy> = {
       ['F', 'Повний екран'],
     ],
     layers: {
-      title: 'Кадр лишається чистим.',
+      title: 'Повний кадр.',
       text: 'Керування живе на власній поверхні, а не лежить поверх фільму.',
       items: [
-        ['Назва', 'Ім’я, розділ і стан відтворення.'],
-        ['Зображення', 'Фільм, а керування відтворенням — під ним.'],
-        ['Керування', 'Окрема поверхня для відтворення.'],
+        ['Назва', 'Назва відео, розділ і стан відтворення.'],
+        ['Зображення', 'Панель керування не перекриває фільм.'],
+        ['Керування', 'Окрема поверхня для дій і навігації.'],
       ],
-      alt: 'Плеєр до відтворення: чорна смуга назви, повне зображення і червона смуга керування під ним.',
+      alt: 'Схема інтерфейсу: три шари плеєра, трохи розсунуті. Чорна смуга назви, кадр фільму і червона смуга керування.',
+      caption: 'Схема інтерфейсу. Шари розділено для наочності.',
     },
     timeline: {
-      title: 'Не навмання.\nДо потрібної миті.',
+      title: 'Керування\nчасом.',
       text: 'Зрозуміла лінійка, кадри попереднього перегляду й розділи роблять шкалу чимось більшим за смугу прогресу.',
       recorded: 'Запис із плеєра.',
       play: 'Відтворити запис',
       pause: 'Пауза',
       alt: 'Запис руху вказівника вздовж лінійки: з’являється кадр попереднього перегляду і час.',
+      gotoAlt: 'Панель керування з відкритим полем часу, у ньому введено 0:07.',
+      goto: 'Клацніть час, введіть х:сс і натисніть Enter: плеєр перейде саме до цієї миті.',
+      feature: { label: 'Особливість', heading: 'Введіть час' },
       items: [
         ['Читання', 'Бачите свою позицію.'],
         ['Перегляд', 'Перевірте кадр.'],
@@ -232,8 +307,9 @@ export const COPY: Record<string, Copy> = {
       ],
     },
     responsive: {
-      title: 'Менше місця.\nТе саме керування.',
-      text: 'Лінійка зберігає своє місце. Решта кнопок переходить до другого рядка.',
+      title: 'Мобільна\nадаптація',
+      text: 'Той самий плеєр у вузькому вікні: шкала зберігає своє місце, решта кнопок переходить до другого рядка, налаштування відкриваються всередині плеєра.',
+      labels: ['01 / ВІДТВОРЕННЯ', '02 / НАЛАШТУВАННЯ'],
       playing: 'Два рядки. Одна зрозуміла шкала.',
       sheet: 'Налаштування лишаються всередині плеєра.',
       windowPlayer: (w, p) => `Вікно ${w} px · плеєр ${p} px`,
@@ -243,26 +319,62 @@ export const COPY: Record<string, Copy> = {
       },
     },
     states: {
-      title: 'Не лише\nперший кадр.',
+      title: 'Стани плеєра.',
+      text: 'Фокус, меню, субтитри, відновлення, завантаження й помилка: не лише спокійний перший кадр.',
       group: 'Стани плеєра',
+      hint: 'Оберіть стан, щоб побачити його на плеєрі.',
       labels: { focus: 'Фокус', settings: 'Налаштування', captions: 'Субтитри', restored: 'Відновлено', loading: 'Завантаження', error: 'Помилка' },
       notes: {
         focus: 'Чіткий маркер фокуса на лінійці. Контрастне кільце на кнопках.',
-        settings: 'Меню має ту саму квадратну геометрію, що й панель; вибране позначене знаком, а не заливкою.',
+        settings: 'Меню має ту саму квадратну геометрію, що й панель. Вибране позначене знаком, а не заливкою.',
         captions: 'Субтитри розташовані над смугою керування, а не під нею.',
-        restored: 'Збережена позиція повертається з коротким написом «Продовжено». Показано на 36-хвилинній копії: позиції зберігаються для відео довших за 15 секунд.',
-        loading: 'Індикатор на чорній підкладці, а статус підписує стан словом.',
+        restored: 'Збережена позиція повертається з коротким написом «Продовжено». Показано на 30-секундній копії: позиції зберігаються для відео довших за 15 секунд.',
+        loading: 'Фрагмент лінійки на чорній підкладці: маркер крокує по рисках. Статус підписує стан словом, а не лише значком.',
         error: 'Значок і слово, а не самий лише колір; першою дією стоїть «Спробувати ще раз».',
       },
       alts: {
         focus: 'Лінійка перемотки з рамкою клавіатурного фокуса навколо вказівника.',
         settings: 'Меню налаштувань, відкрите над смугою керування.',
         captions: 'Субтитри на зображенні над смугою керування.',
-        restored: 'Смуга назви з написом Resumed 19:40 після відновлення збереженої позиції.',
-        loading: 'Індикатор на чорному зображенні під час буферизації відео.',
+        restored: 'Смуга назви з написом Resumed 0:15 після відновлення збереженої позиції.',
+        loading: 'Маленька лінійка з маркером на чорному зображенні під час буферизації відео.',
         error: 'Повідомлення про помилку з кнопками Try again і OK.',
       },
-      captured: 'Кадри плеєра показано англійською.',
+    },
+    formats: {
+      title: 'Будь-який формат',
+      text: 'Той самий скін і те саме керування для широкого, квадратного й вертикального відео.',
+      items: [
+        ['16:9', 'Широкий'],
+        ['1:1', 'Квадратний'],
+        ['9:16', 'Вертикальний'],
+      ],
+    },
+    prefs: {
+      title: 'Уподобання.',
+      text: 'Плеєр пам’ятає вас, говорить вашою мовою і підлаштовується під те, як ви ним користуєтесь.',
+      items: [
+        ['Пам’ять', 'Запам’ятовує швидкість, звук, мову субтитрів і позицію кожного відео. Одна команда скидає все.'],
+        ['Мови', 'Скін говорить англійською та українською; решта йде з перекладів Video.js.'],
+        ['Доступність', 'Стилі для зменшення руху та високого контрасту, а зміни стану озвучуються для скрінрідерів.'],
+        ['Дотик', 'Двічі торкніться лівого або правого боку, щоб перемотати, центру, щоб увімкнути повний екран.'],
+      ],
+    },
+    keyboard: {
+      title: 'Навігація.',
+      text: 'До будь-якої миті: клавішами та фокусом.',
+      keysTitle: 'Скорочення',
+      keysText: 'Кожен елемент працює з клавіатури, коли плеєр у фокусі.',
+      or: 'або',
+      focus: {
+        heading: 'Фокус',
+        title: 'Як побачити фокус клавіатури',
+        text: 'Клацніть плеєр і натискайте Tab, щоб переходити від елемента до елемента. Рамка завжди показує, де ви. Вона з’являється для клавіатури, а не для миші.',
+        marker: 'На лінійці: чорна рамка навколо маркера. Стрілки пересувають маркер.',
+        button: 'На кнопці: біле кільце з чорним краєм. Пробіл або Enter натискає її.',
+        markerAlt: 'Лінійка з чорною рамкою клавіатурного фокуса навколо маркера.',
+        buttonAlt: 'Кнопка налаштувань із білим кільцем клавіатурного фокуса та чорним краєм.',
+      },
     },
     use: {
       title: 'Ваше відео.\nВаш плеєр.',
@@ -270,23 +382,20 @@ export const COPY: Record<string, Copy> = {
       source: 'Переглянути код',
       workbench: 'Відкрити робочий стенд',
       exampleTitle: 'Приклад підключення',
-      testingTitle: 'Перевірки та обмеження',
+      testingTitle: 'Перевірка та сумісність',
+      testingText: 'Перевірено в Chrome на Windows. Safari та допоміжні технології поки не перевірено.',
+      languagesLine: 'Мови інтерфейсу: English / Українська.',
+      detailsTitle: 'Деталі перевірки',
       checkedTitle: 'Перевірено',
-      checked: [
-        'Chrome на Windows, автоматично: вікна 320, 375, 720, 768 і 1440 px (720 px перевіряє вузьку розкладку, це не масштаб браузера), без горизонтальної прокрутки та накладання елементів.',
-        'Клавіатура: усі елементи досяжні, фокус видно, меню відкривається, повертається назад і закривається клавішею Escape.',
-        'Меню на дотик в емуляції Chrome: відкриття не позначає рядок вибраним.',
-        'Перевірка типів і збірка проходять.',
+      checked: [],
+      notTestedTitle: 'Не перевірено',
+      notTested: [
+        'Safari.',
+        'Справжній скрінрідер (NVDA, JAWS, VoiceOver, TalkBack).',
+        'Масштаб браузера 200% та екрани з дробовим масштабом (125%, 150%).',
       ],
-      limitsTitle: 'Відомі обмеження',
-      limits: [
-        'Не перевірено в Safari і Firefox.',
-        'Не перевірено на справжньому телефоні; дотик лише емульовано.',
-        'Не перевірено зі скрінрідером.',
-        'Режим зменшення руху не перевірявся в реальній системі.',
-        'Масштаб браузера 200% не перевірявся.',
-        'Інтерфейс перекладено лише англійською та українською.',
-      ],
+      notesTitle: 'Як',
+      notes: ['Перевірки автоматичні, у headless Chrome на Windows, без ручної сесії на пристрої.'],
     },
     footer: {
       groups: [

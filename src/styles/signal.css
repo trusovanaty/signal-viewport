@@ -5,8 +5,15 @@
 
 .signal-skin {
   --signal-red: #e52600; /* black 4.61:1, white 4.56:1 */
-  --signal-ink: #000000;
+  --signal-ink: #000000; /* text and lines on the red panel: black on this red is 4.61:1 */
+  --signal-surface: #17151a; /* black surfaces: the title strip, the plates, the picture's backing, menus */
   --signal-paper: #ffffff;
+  /* Panel roles, so a theme can swap them: the quiet parts (base ticks, labels, rail), the marks that move (pin, played
+     ticks, fill) and the two rings of the focus frame. On the red panel: black / white / white over black. */
+  --signal-dim: var(--signal-ink);
+  --signal-mark: var(--signal-paper);
+  --signal-ring: var(--signal-paper);
+  --signal-ring-gap: var(--signal-ink);
   --signal-control: 48px; /* minimum touch target */
   --signal-gap: 16px;
   --signal-ruler-h: 56px;
@@ -39,6 +46,9 @@
 .signal-skin {
   aspect-ratio: auto !important;
   height: auto;
+  /* Several players can stand on one page: each one's anchors (the picture, the control panel) are visible only inside it,
+     so a menu always opens next to its own player. */
+  anchor-scope: --signal-viewport, --signal-panel;
 }
 
 .signal-skin:fullscreen {
@@ -57,12 +67,12 @@
   flex: 1 1 auto;
   aspect-ratio: var(--preview-player-ratio, 16 / 9);
   min-height: 0;
-  background: #000;
+  background: var(--signal-surface);
   color: var(--signal-paper);
   overflow: hidden;
   /* Transient feedback over the video (volume, seek, status) gets a solid black plate, so white icons and text stay
      readable on bright footage. Scoped here, so the panel buttons keep their own transparent background. */
-  --media-background: #000;
+  --media-background: var(--signal-surface);
 }
 /*
  * Captions. Scaffold lifts them by 80px while controls are visible, because its controls float over the picture. Ours
@@ -94,7 +104,7 @@
   gap: 16px;
   min-height: 40px;
   padding: 0 var(--signal-gap);
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
   min-width: 0;
 }
@@ -243,11 +253,11 @@
   transition: background-color var(--media-duration-fast, 100ms), color var(--media-duration-fast, 100ms);
 }
 .signal-btn--play {
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
 }
 .signal-btn:hover {
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
 }
 .signal-btn--play:hover {
@@ -275,9 +285,9 @@
 
 /* Double focus ring: ink inner gap, white outer. Readable on red, black, and white. */
 .signal-btn:focus-visible {
-  outline: 3px solid var(--signal-paper);
+  outline: 3px solid var(--signal-ring);
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--signal-ink);
+  box-shadow: 0 0 0 2px var(--signal-ring-gap);
 }
 
 /* ---- Time readout: elapsed leads, total is secondary ---- */
@@ -324,9 +334,9 @@
 }
 .signal-goto-button:focus-visible {
   text-decoration-line: underline;
-  outline: 3px solid var(--signal-paper);
+  outline: 3px solid var(--signal-ring);
   outline-offset: 4px;
-  box-shadow: 0 0 0 2px var(--signal-ink);
+  box-shadow: 0 0 0 2px var(--signal-ring-gap);
 }
 .signal-goto-button[data-open] {
   visibility: hidden;
@@ -370,9 +380,9 @@
   color: #5a5a5a;
 }
 .signal-goto-input:focus-visible {
-  outline: 3px solid var(--signal-paper);
+  outline: 3px solid var(--signal-ring);
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--signal-ink);
+  box-shadow: 0 0 0 2px var(--signal-ring-gap);
 }
 /* The message sits on the edge of the picture above the panel, so the panel never changes height while typing. */
 .signal-goto-error {
@@ -383,7 +393,7 @@
   max-width: 100%;
   box-sizing: border-box;
   padding: 8px 16px;
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
   font-family: var(--signal-mono);
   font-size: 13px;
@@ -413,8 +423,8 @@
   inset: 0;
   pointer-events: none;
 }
-.signal-ticks--base {
-  color: var(--signal-ink);
+.-ticks--base {
+  color: var(--signal-dim);
 }
 /*
  * One position for the pin, the white rail fill and the white (played) ticks: the playback position, or the pointer
@@ -428,12 +438,19 @@
   --signal-pos: var(--media-slider-pointer, var(--media-slider-fill, 0%));
 }
 .signal-ticks--played {
-  color: var(--signal-paper);
+  color: var(--signal-mark);
   clip-path: inset(0 calc(100% - var(--signal-pos)) 0 0);
 }
 /* Gliding is only for playback and keyboard seeks; while dragging the parts follow the pointer immediately. */
 .signal-ruler:not([data-dragging]) .signal-ticks--played {
   transition: clip-path var(--signal-glide) linear;
+}
+
+/* A replay after the end snaps to the start at once; everything else (playback, seeks) glides as before. */
+.signal-ruler[data-snap]:not([data-dragging]) .signal-ticks--played,
+.signal-ruler[data-snap]:not([data-dragging]) .signal-rail-fill,
+.signal-ruler[data-snap]:not([data-dragging]) .signal-playhead {
+  transition: none;
 }
 
 /* Ticks stand on the rail: short, thin minors and taller, heavier majors. */
@@ -458,9 +475,14 @@
   line-height: 16px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
-  color: var(--signal-ink);
+  color: var(--signal-dim);
 }
 /* The first label starts at the left edge of the ruler. */
+.signal-tick--end .signal-tick-label {
+  transform: none;
+  left: auto;
+  right: -1px;
+}
 .signal-tick:first-child .signal-tick-label {
   transform: none;
   left: -1px;
@@ -472,14 +494,14 @@
   inset-inline: 0;
   top: var(--signal-rail-y);
   height: 2px;
-  background: var(--signal-ink);
+  background: var(--signal-dim);
 }
 .signal-rail-fill {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
   width: var(--signal-pos);
-  background: var(--signal-paper);
+  background: var(--signal-mark);
 }
 .signal-ruler:not([data-dragging]) .signal-rail-fill {
   transition: width var(--signal-glide) linear;
@@ -510,7 +532,7 @@
   content: '';
   position: absolute;
   inset: 0 3px; /* a 14px-wide shape centered in the 20px box */
-  background: var(--signal-paper);
+  background: var(--signal-mark);
   /* head: triangle from the top corners to the stem; stem: 3px, centered on x=7. 7.86px is where the 3px stem meets
      the triangle's edges. */
   clip-path: polygon(0 0, 100% 0, 8.5px 7.86px, 8.5px 100%, 5.5px 100%, 5.5px 7.86px);
@@ -537,7 +559,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
   font-family: var(--signal-mono);
   font-size: 12px;
@@ -563,7 +585,7 @@
   width: var(--signal-thumb-w, 160px);
   max-width: var(--signal-thumb-w, 160px);
   transform: translateX(-50%);
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   border: 2px solid var(--signal-ink);
   pointer-events: none;
   opacity: 0;
@@ -585,9 +607,8 @@
   .signal-thumb-frame { --signal-thumb-w: 128px; }
 }
 
-/* Fewer markings on narrow rulers: drop minor ticks and every other label. */
+/* Fewer markings on narrow rulers: every other label goes. The minor ticks stay (the tick builder drops them only when they would be crowded). */
 @container ruler (max-width: 300px) {
-  .signal-tick--minor { display: none; }
   .signal-tick[data-alt] .signal-tick-label { display: none; }
 }
 
@@ -600,10 +621,17 @@
 .signal-volume-slider {
   position: relative;
   display: none;
+  /* Room on both sides: the marker at 0 sticks out half its width to the left, so it must not touch the mute button. */
+  margin-inline: 12px 8px;
   width: 64px;
   height: var(--signal-control);
   cursor: pointer;
   touch-action: none;
+}
+.signal-volume-slider {
+  /* The white fill (.signal-rail-fill) reads --signal-pos, which only the ruler defined; without it the fill had no
+     width and the level showed only as a thin marker. */
+  --signal-pos: var(--media-slider-fill, 0%);
 }
 .signal-volume-slider .signal-rail {
   top: calc(50% - 1px);
@@ -620,11 +648,11 @@
 .signal-volume-thumb::before {
   content: '';
   position: absolute;
-  inset-block: 5px;
+  inset-block: 4px;
   left: 50%;
-  width: 2px;
+  width: 3px; /* the same 3px stem as the ruler's pin */
   transform: translateX(-50%);
-  background: var(--signal-paper);
+  background: var(--signal-mark);
 }
 .signal-volume-thumb:focus-visible {
   outline: 3px solid var(--signal-ink);
@@ -649,7 +677,7 @@
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
   cursor: pointer;
   outline: none;
@@ -689,7 +717,7 @@
   line-height: 1;
 }
 .signal-btn--menu[aria-expanded='true'] {
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
 }
 
@@ -704,7 +732,7 @@
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   color: var(--signal-paper);
   font-family: var(--signal-font);
   font-size: 15px;
@@ -836,7 +864,7 @@
 .signal-chapter-frame {
   width: 64px;
   max-width: 64px;
-  background: var(--signal-ink);
+  background: var(--signal-surface);
   border: 1px solid currentColor;
   overflow: hidden;
 }
@@ -948,4 +976,53 @@
   .signal-rail { background: CanvasText; }
   .signal-rail-fill { background: Highlight; }
   .signal-playhead::before, .signal-volume-thumb::before { background: Highlight; }
+}
+
+/* Loading mark: a black plate with a piece of the ruler; the pin steps along seven ticks and back. Same geometry as the
+   rest of the skin: square, white on black, no rounding. */
+.signal-loading {
+  display: block;
+  background: var(--signal-surface);
+  fill: var(--signal-paper);
+}
+.signal-loading-pin {
+  animation: signal-loading-step 1.4s steps(7, jump-none) infinite alternate;
+}
+@keyframes signal-loading-step {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(36px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-loading-pin {
+    animation: none;
+    transform: translateX(18px);
+  }
+}
+
+/*
+ * Mono theme: the same skin without the red. Set data-theme="mono" on the skin or on any ancestor. Only the roles above
+ * change: a white panel, black ink, grey quiet parts (#6b6b6b is 5.3:1 on white), black marks, and a focus frame that is
+ * black outside and white inside. Black surfaces (title strip, menus, plates, the play button) stay as they are.
+ */
+.signal-skin[data-theme='mono'],
+[data-theme='mono'] .signal-skin {
+  --signal-red: #ffffff;
+  --signal-dim: #6b6b6b;
+  --signal-mark: #000000;
+  --signal-ring: #000000;
+  --signal-ring-gap: #ffffff;
+}
+.signal-skin[data-theme='mono'] .signal-panel,
+[data-theme='mono'] .signal-skin .signal-panel {
+  /* A black edge between the picture and the white panel, drawn inside, so the panel keeps its height. */
+  box-shadow: inset 0 2px 0 var(--signal-surface);
+}
+.signal-skin[data-theme='mono'] .signal-btn--play:hover,
+[data-theme='mono'] .signal-skin .signal-btn--play:hover {
+  background: #4d4d4d;
+  color: var(--signal-paper);
 }

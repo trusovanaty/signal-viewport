@@ -70,3 +70,18 @@ export function Player({
     </VideoPlayer>
   );
 }
+
+/**
+ * The same film in a frame of another shape (the ratio comes from `--preview-player-ratio` on a parent, and the picture
+ * fills the frame, cropped, via `--media-object-fit`). No saved position and no tracks: it is only a demonstration of the
+ * frame, and several of them can stand on one page.
+ */
+export function FormatPlayer() {
+  return (
+    <VideoPlayer title={TITLE} poster={POSTER}>
+      <VideoSkin resumeKey="">
+        <Video src={SRC} playsInline preload="metadata" />
+      </VideoSkin>
+    </VideoPlayer>
+  );
+}

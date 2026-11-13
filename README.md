@@ -81,13 +81,29 @@ The media shown in this repository is configured in `apps/preview/src/frame/play
 - `skin.json`: what the skin was created from; it records the Video.js version.
 - `vercel.json`, `netlify.toml`, `npm run deploy`: how the showcase and workbench build and deploy on a static host. Nothing is deployed by default.
 
-## Checked and not checked
+## Testing & compatibility
 
-Checked (automated, Chrome on Windows): window widths 320, 375, 768 and 1440 px without horizontal scroll or overlapping controls; keyboard operation and visible focus; the menu on emulated touch; the error, loading, ended and restored states; English and Ukrainian; `npm run typecheck` and `npm run build`.
+Tested in Chrome on Windows. Other browsers, physical mobile devices and assistive technologies have not yet been tested. Interface languages: English and Ukrainian.
 
-Checked on a generated 36-minute local file: the ruler, jumps to 30:00 and other times, errors, keyboard and mobile widths.
+Checked (automated, headless Chrome on Windows):
+- Window widths 320, 375, 720, 768 and 1440 px, with no horizontal scroll and no overlapping controls. The 720 px window checks the narrow layout; it is not browser zoom.
+- Keyboard operation and visible focus; the state gallery and the disclosure blocks work with Tab, Space and Enter.
+- The settings menu in Chrome's touch emulation (an emulation, not a physical device).
+- The error, loading, ended and restored states; saved positions; a generated 36-minute local file (the ruler, jumps to 30:00 and other times, errors, keyboard and mobile widths).
+- Opening your own video locally (never uploaded), including a broken file; the Desktop / Mobile switch (a 375 px container of the same player; a layout check, not a test on a real phone).
+- Chrome's accessibility tree for the state gallery (only the active picture is exposed). This checks the browser's accessibility tree; it is not a screen reader test.
+- `npm run typecheck` and `npm run build`.
 
-Not checked: Safari, Firefox, a real phone, a screen reader, a real reduced-motion setting, real browser zoom at 200% (a 720 px window was used as a narrow-layout check instead), right-to-left layout, interface languages other than English and Ukrainian, and a long (hours) real video. Passing an automated check is not a claim of full accessibility.
+Not tested:
+- Safari and Firefox.
+- A physical mobile phone (touch was only emulated).
+- A real screen reader (NVDA, JAWS, VoiceOver, TalkBack).
+- The reduced-motion setting on a real system.
+- Browser zoom at 200%. The 720 px window and the checks at different device pixel ratios are not the same as browser zoom at 200%.
+- Displays with fractional scaling (125%, 150%): the major ticks of the ruler can come out 2 or 3 device pixels wide.
+- Very large video files, video formats the browser cannot decode (the player reports an error), a real hours-long stream, and right-to-left layout.
+
+Notes: the automated checks ran in headless Chrome on Windows, with no manual session on a physical device. Passing an automated check does not mean the page has no accessibility problems.
 
 ## Licenses
 
