@@ -11,6 +11,7 @@ export interface Copy {
   hint: string;
   keysTitle: string;
   keys: [string, string][];
+  local: { open: string; restore: string; note: string; notVideo: string; cannotPlay: string; region: string };
   layers: { title: string; text: string; items: [string, string][]; alt: string };
   timeline: {
     title: string;
@@ -65,6 +66,14 @@ export const COPY: Record<string, Copy> = {
     demoTag: 'Demo footage',
     about: 'An AI-generated fashion film (Kling 2.6 Pro, made through Flora), used here as demo footage.',
     hint: 'Play. Scrub. Find your moment.',
+    local: {
+      open: 'Open your video',
+      restore: 'Restore demo',
+      note: 'Opened locally. Not uploaded.',
+      notVideo: 'That file is not a video.',
+      cannotPlay: 'This file could not be played in your browser. Choose another file or restore the demo.',
+      region: 'Your video',
+    },
     keysTitle: 'Keyboard shortcuts',
     keys: [
       ['Space, K', 'Play or pause'],
@@ -179,6 +188,14 @@ export const COPY: Record<string, Copy> = {
     demoTag: 'Демо-відео',
     about: 'Модний фільм, згенерований ШІ (Kling 2.6 Pro, через Flora), використаний тут як демонстраційне відео.',
     hint: 'Запустіть. Перемотайте. Знайдіть свою мить.',
+    local: {
+      open: 'Відкрити своє відео',
+      restore: 'Повернути демо',
+      note: 'Файл відкривається лише у вашому браузері. На сервер не надсилається.',
+      notVideo: 'Цей файл не є відео.',
+      cannotPlay: 'Цей файл не вдалося відтворити у вашому браузері. Оберіть інший файл або поверніть демо.',
+      region: 'Ваше відео',
+    },
     keysTitle: 'Клавіатурні скорочення',
     keys: [
       ['Пробіл, K', 'Відтворення або пауза'],

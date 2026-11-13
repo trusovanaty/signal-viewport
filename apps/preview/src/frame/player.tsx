@@ -24,10 +24,42 @@ const CHAPTERS = './media/chapters.vtt';
 const CAPTIONS = './media/captions.vtt';
 const THUMBNAILS = './media/thumbs.vtt';
 
-/** `media` carries the workbench's playback options: autoplay, muted, loop, and preload. */
-export function Player({ media }: { media?: PlaybackProps }) {
+/** A video the visitor opened from their own computer: a blob address made in this browser, and the file's name. */
+export interface LocalMedia {
+  url: string;
+  name: string;
+}
+
+/**
+ * `media` carries the workbench's playback options: autoplay, muted, loop, and preload.
+ * `local` swaps the demo for a file the visitor opened. It is played by the plain HTML5 `Video` component (a blob address
+ * is not a Mux or HLS source), it never gets the demo's poster or tracks, it opens paused, and its saved position is
+ * switched off (`resumeKey=""`), so neither the file nor its name is stored. The `key` gives every source a fresh player:
+ * playback state, errors, menus and the selected track all start clean, and there is still only one player on the page.
+ */
+export function Player({
+  media,
+  local,
+  onLocalError,
+  onLocalReady,
+}: {
+  media?: PlaybackProps;
+  local?: LocalMedia | null;
+  /** Called when the browser fails to load or play the opened file, and when it has loaded its metadata. */
+  onLocalError?: () => void;
+  onLocalReady?: () => void;
+}) {
+  if (local) {
+    return (
+      <VideoPlayer key={local.url} title={local.name}>
+        <VideoSkin resumeKey="">
+          <Video src={local.url} playsInline preload="metadata" onError={onLocalError} onLoadedMetadata={onLocalReady} />
+        </VideoSkin>
+      </VideoPlayer>
+    );
+  }
   return (
-    <VideoPlayer title={TITLE} poster={POSTER}>
+    <VideoPlayer key="demo" title={TITLE} poster={POSTER}>
       <VideoSkin>
         <Video {...media} src={SRC} playsInline crossOrigin="">
           <track kind="chapters" label="English" srcLang="en" src={CHAPTERS} default />

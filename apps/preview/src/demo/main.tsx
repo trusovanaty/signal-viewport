@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import '@/skin.css';
 import './demo.css';
 import './showcase.css';
-import { MATERIAL, Player, TITLE } from '../frame/player';
+import { MATERIAL, Player, TITLE, type LocalMedia } from '../frame/player';
 import { COPY, EXAMPLE, STATES, type Copy, type StateKey } from './copy';
 
 // The showcase page. One real player at the top; everything below is captured from this same build (images and a
@@ -74,15 +74,97 @@ function Hero({ copy, locale }: { copy: Copy; locale: string }) {
   );
 }
 
-function Credit({ copy, locale }: { copy: Copy; locale: string }) {
+/**
+ * A first, cheap look at a chosen file, before the browser is asked to play it. A video MIME type or a video extension
+ * is a good sign; an empty or generic type is not a reason to refuse (some real videos arrive that way); an image, text,
+ * audio or other clearly different type is refused. Whatever passes is handed to the player, and what the browser then
+ * does with the file (plays it, or fails) is the real answer. Nothing here promises that every format plays.
+ */
+const VIDEO_EXTENSION = /\.(mp4|m4v|mov|webm|ogv|ogg|mkv|avi|mpg|mpeg|3gp|3g2|ts|mts|m2ts|wmv|flv)$/i;
+function looksLikeVideo(file: File): boolean {
+  const type = file.type.toLowerCase();
+  if (type.startsWith('video/')) return true;
+  if (VIDEO_EXTENSION.test(file.name)) return true;
+  return type === '' || type === 'application/octet-stream';
+}
+
+function Credit({
+  copy,
+  locale,
+  local,
+  onPick,
+  onRestore,
+  notVideo,
+  failed,
+}: {
+  copy: Copy;
+  locale: string;
+  local: LocalMedia | null;
+  onPick: (file: File) => void;
+  onRestore: () => void;
+  notVideo: boolean;
+  failed: boolean;
+}) {
   const about = MATERIAL.about ? (locale.startsWith('uk') && MATERIAL.isDemo ? copy.about : MATERIAL.about) : null;
+  const input = useRef<HTMLInputElement>(null);
+  const openButton = useRef<HTMLButtonElement>(null);
   return (
     <div className="demo-credit">
       <div className="demo-credit-main">
-        <strong>{TITLE}</strong>
-        {MATERIAL.isDemo ? <span className="demo-tag">{copy.demoTag}</span> : null}
-        {MATERIAL.author ? <span>{MATERIAL.author}</span> : null}
-        {about ? <span className="demo-about">{about}</span> : null}
+        {local ? (
+          <>
+            {/* The file's name is shown as plain text only (React escapes it); it is never stored or sent anywhere. */}
+            <strong className="demo-localname">{local.name}</strong>
+            <span className="demo-about" role="status">
+              {copy.local.note}
+            </span>
+          </>
+        ) : (
+          <>
+            <strong>{TITLE}</strong>
+            {MATERIAL.isDemo ? <span className="demo-tag">{copy.demoTag}</span> : null}
+            {MATERIAL.author ? <span>{MATERIAL.author}</span> : null}
+            {about ? <span className="demo-about">{about}</span> : null}
+          </>
+        )}
+        <div className="demo-actions">
+          {/* A real file input, hidden; the button opens the browser's own file chooser. Nothing is uploaded. */}
+          <input
+            ref={input}
+            type="file"
+            accept="video/*,.mp4,.m4v,.mov,.webm,.ogv,.mkv,.avi,.mpg,.mpeg,.3gp"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (!file) return; // the chooser was cancelled: nothing changes
+              onPick(file);
+              // Focus stays on the button that opened the chooser, whatever happens to the player below it.
+              openButton.current?.focus();
+            }}
+          />
+          <button ref={openButton} type="button" className="sc-btn" onClick={() => input.current?.click()}>
+            {copy.local.open}
+          </button>
+          {local ? (
+            <button
+              type="button"
+              className="sc-btn"
+              onClick={() => {
+                onRestore();
+                // This button disappears with the local file, so focus moves to the one that stays.
+                openButton.current?.focus();
+              }}
+            >
+              {copy.local.restore}
+            </button>
+          ) : null}
+        </div>
+        {notVideo || failed ? (
+          <span className="demo-about" role="alert">
+            {notVideo ? copy.local.notVideo : copy.local.cannotPlay}
+          </span>
+        ) : null}
       </div>
       <div className="demo-credit-keys">
         <p className="demo-hint">{copy.hint}</p>
@@ -362,6 +444,31 @@ function Demo() {
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+  // A video opened from the visitor's computer. The blob address lives only in this tab; it is released when another
+  // source replaces it, when the demo is restored, and when the page closes.
+  const [local, setLocal] = useState<LocalMedia | null>(null);
+  const [notVideo, setNotVideo] = useState(false);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    const url = local?.url;
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [local?.url]);
+  const pick = (file: File) => {
+    if (!looksLikeVideo(file)) {
+      setNotVideo(true);
+      return;
+    }
+    setNotVideo(false);
+    setFailed(false);
+    setLocal({ url: URL.createObjectURL(file), name: file.name });
+  };
+  const restore = () => {
+    setNotVideo(false);
+    setFailed(false);
+    setLocal(null);
+  };
   // The player's width is limited by the height of the window, so the whole player (picture and red panel) fits in the
   // first screen. The page only tells CSS where the player starts; the video keeps its 16:9 and nothing is scaled.
   useLayoutEffect(() => {
@@ -387,9 +494,9 @@ function Demo() {
           <Hero copy={copy} locale={locale} />
           <div className="demo-stage">
             <div className="demo-player">
-              <Player />
+              <Player local={local} onLocalError={() => setFailed(true)} onLocalReady={() => setFailed(false)} />
             </div>
-            <Credit copy={copy} locale={locale} />
+            <Credit copy={copy} locale={locale} local={local} onPick={pick} onRestore={restore} notVideo={notVideo} failed={failed} />
           </div>
         </div>
         <Layers copy={copy.layers} />

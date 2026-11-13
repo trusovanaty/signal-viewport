@@ -220,3 +220,16 @@ live-audio-player {
     width: min(100%, max(640px, calc((100dvh - var(--demo-above, 190px) - 28px - 128px) * 16 / 9)));
   }
 }
+
+/* Open your video: the buttons under the player, and the opened file's name as plain text. */
+.demo-actions {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.demo-localname {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

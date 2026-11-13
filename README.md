@@ -23,6 +23,7 @@ The port is Vite's default and may differ; the terminal prints the real address.
 
 - Title strip with the video title, the chapter and a short state word (Ready, Playing, Paused, Buffering, Ended, Error). An error is marked by an icon as well as the word.
 - Poster with a Start button, then Replay at the end.
+- On the showcase page, "Open your video" plays a file from your own computer in the same player. The file is opened in this browser only (a blob address from `URL.createObjectURL`), it is never uploaded, its name is shown as plain text, nothing about it is stored (saved position is off for local files), and "Restore demo" brings the demo back. The file type is only a first hint; if the browser cannot play the file, the page says so. Which formats play depends on your browser; none is promised.
 - Click the elapsed time to open "Go to time": type `m:ss` or `h:mm:ss`, Enter to jump, Escape to close. It uses the player's own seek, keeps play or pause, and explains a time outside the video.
 - Ruler as the time slider: ticks and labels sized to the width, frame previews on hover and drag when the source has a storyboard, chapters from a WebVTT chapters track.
 - Settings menu with Speed, Quality, Captions and Chapters. A section appears only when the source and the browser really offer it. Picture-in-Picture appears only where it is supported.
