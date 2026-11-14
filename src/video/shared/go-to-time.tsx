@@ -22,6 +22,21 @@ export function parseTime(text: string): number | null {
 }
 
 /**
+ * Turns typed digits into a time as they are typed: the last two digits are seconds, the two before them minutes, and
+ * anything before that hours (`2` → 0:02, `26` → 0:26, `126` → 1:26, `12345` → 1:23:45). Non-digits are dropped, leading
+ * zeros do not count, and at most six digits are kept. Empty stays empty.
+ */
+export function maskTime(text: string): string {
+  const digits = text.replace(/\D/g, '').replace(/^0+/, '').slice(-6);
+  if (text.replace(/\D/g, '') === '') return '';
+  const d = digits.padStart(3, '0');
+  const seconds = d.slice(-2);
+  const rest = d.slice(0, -2);
+  if (rest.length <= 2) return `${Number(rest)}:${seconds}`;
+  return `${Number(rest.slice(0, -2))}:${rest.slice(-2)}:${seconds}`;
+}
+
+/**
  * The elapsed time, as a button. Pressing it swaps the readout for a small "Go to time" field: Enter jumps (with the
  * player's own seek action, so play and pause stay as they were), Escape closes and gives focus back to the button.
  * Anything outside the video, or not in the two formats, is explained in a short message above the panel. Typing in the
@@ -115,7 +130,7 @@ export function GoToTime() {
             ref={input}
             className="signal-goto-input"
             type="text"
-            inputMode="text"
+            inputMode="numeric"
             autoComplete="off"
             autoCapitalize="off"
             spellCheck={false}
@@ -125,7 +140,19 @@ export function GoToTime() {
             defaultValue={formatTime(currentTime)}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : undefined}
-            onChange={() => setError(null)}
+            onChange={(event) => {
+              setError(null);
+              // Only digits are typed; the colons put themselves in. The last two digits are the seconds (like a timer),
+              // so 26 reads 0:26 and 126 reads 1:26. A typed colon changes nothing: 1:30 and 130 are the same entry.
+              const field = event.currentTarget;
+              const deleting = String((event.nativeEvent as InputEvent).inputType ?? '').startsWith('delete');
+              // Erasing the last digit empties the field instead of leaving 0:00 behind.
+              const formatted = deleting && /^[0:]*$/.test(field.value) ? '' : maskTime(field.value);
+              if (formatted !== field.value) {
+                field.value = formatted;
+                field.setSelectionRange(formatted.length, formatted.length);
+              }
+            }}
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
                 event.preventDefault();

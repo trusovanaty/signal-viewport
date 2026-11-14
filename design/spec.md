@@ -447,3 +447,11 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 - If the Mux stream fails to load, the player restarts once on the bundled `media/freefall-bloom.mp4` (same film), so the page still plays without Mux. The "Format" frames and a file the visitor opens stay on the plain `Video` component.
 - Showcase pictures re-captured again on the Mux stream (the settings picture now lists Quality).
 - Section headlines end with the ruler's pin (a red triangle, `.sc-stop`) instead of a round full stop, like the product name and the 404 page. Mobile adaptation has no full stop by design.
+
+- Go to time: the field takes digits only and puts the colons in itself, like a timer (the last two digits are seconds: 26 reads 0:26, 126 reads 1:26, 12345 reads 1:23:45); a typed colon changes nothing; Backspace to empty clears it; the mobile keyboard is numeric. Errors still appear only on Enter.
+
+- Landing copy: the Colour note no longer mentions the attribute; the Source line is one line (so the right column ends level with the player in EN and UK); the Settings note now lists Speed, Quality, Captions, Chapters and Colour.
+
+- Error dialog in the idea of the 404 page: a short ruler with the pin past its last tick, the line "This moment is not on the ruler." (Video.js's own title stays as the accessible name), then the friendly sentence, the technical detail line and Try again / OK. The ruler is hidden in small players (container under 560 px). The showcase Error picture was re-captured.
+
+- The three frames in Any format now have the same menu as the main player (Speed, Captions, Chapters, Colour; no Quality, they play the bundled MP4): they carry the chapters, captions and ruler-preview tracks and follow the shared Red/Mono choice.

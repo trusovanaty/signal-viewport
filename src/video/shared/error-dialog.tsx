@@ -67,9 +67,18 @@ export function ErrorDialog() {
           'media-high-contrast:border media-high-contrast:border-solid media-high-contrast:border-current forced-colors:border forced-colors:border-solid forced-colors:border-[CanvasText]'
         )}
       >
+        {/* The ruler of the player with the pin past its last tick: this moment is not on it (as on the 404 page). */}
+        <div className="signal-error-ruler" aria-hidden="true">
+          <span className="signal-error-ticks" />
+          <span className="signal-error-pin" />
+        </div>
         <div className="flex items-start gap-3">
           <AlertIcon className="mt-0.5 size-6 shrink-0" />
-          <ErrorDialogPrimitive.Title className={'text-[calc(var(--media-spacing)*4.5)] leading-7'} />
+          {/* What is read first is the lead; Video.js's own title ("Something went wrong") stays as the dialog's accessible name. */}
+          <span className="signal-error-lead" aria-hidden="true">
+            {copy.errorLead}
+          </span>
+          <ErrorDialogPrimitive.Title className="signal-sr" />
         </div>
         <ErrorDialogPrimitive.Description className={'text-[calc(var(--media-spacing)*3.5)]'}>
           <ErrorText />

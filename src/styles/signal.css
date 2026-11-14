@@ -1029,3 +1029,58 @@
   background: #4d4d4d;
   color: var(--signal-paper);
 }
+
+/* Error dialog, in the idea of the 404 page: a short ruler with the pin past its last tick, then one clear line. */
+.signal-error-ruler {
+  position: relative;
+  height: 22px;
+}
+.signal-error-ruler::before {
+  content: '';
+  position: absolute;
+  inset: 14px 0 auto;
+  height: 1px;
+  background: currentColor;
+}
+.signal-error-ticks {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 62%;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 10px);
+}
+.signal-error-pin {
+  position: absolute;
+  left: 84%;
+  top: 0;
+  width: 14px;
+  height: 22px;
+  margin-left: -7px;
+}
+.signal-error-pin::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-inline: 7px solid transparent;
+  border-top: 9px solid var(--signal-red);
+}
+.signal-error-pin::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 9px;
+  width: 2px;
+  height: 13px;
+  background: var(--signal-red);
+}
+.signal-error-lead {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+}
+@container media-root (max-width: 559.98px) {
+  .signal-error-ruler { display: none; }
+  .signal-error-lead { font-size: 15px; line-height: 20px; }
+}

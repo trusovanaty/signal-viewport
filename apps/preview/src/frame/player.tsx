@@ -20,7 +20,7 @@ export const TITLE = 'Freefall Bloom';
  */
 export const MATERIAL: { author: string | null; about: string | null; isDemo: boolean } = {
   author: null,
-  about: 'An AI-generated animated film with its own music, both made by the author, used here as demo footage.',
+  about: 'AI-generated film and music, by the author.',
   isDemo: true,
 };
 /** Tracks served from `apps/preview/public/media`: chapters, captions, and a ruler preview storyboard (a sprite sheet). */
@@ -94,14 +94,31 @@ function DemoPlayer({ media }: { media?: PlaybackProps }) {
 
 /**
  * The same film in a frame of another shape (the ratio comes from `--preview-player-ratio` on a parent, and the picture
- * fills the frame, cropped, via `--media-object-fit`). No saved position and no tracks: it is only a demonstration of the
- * frame, and several of them can stand on one page.
+ * fills the frame, cropped, via `--media-object-fit`). No saved position: it is only a demonstration of the frame, and
+ * several of them can stand on one page. It has the same menu as the main player (speed, quality, captions, chapters,
+ * colour): the same Mux stream (metadata only until played), with the bundled MP4 as the fallback.
  */
 export function FormatPlayer() {
+  const [fallback, setFallback] = useState(false);
+  const tracks = (
+    <>
+      <track kind="chapters" label="English" srcLang="en" src={CHAPTERS} default />
+      <track kind="subtitles" label="English" srcLang="en" src={CAPTIONS} />
+      <track kind="metadata" label="thumbnails" src={THUMBNAILS} default />
+    </>
+  );
   return (
-    <VideoPlayer title={TITLE} poster={POSTER}>
-      <VideoSkin resumeKey="">
-        <Video src={SRC} playsInline preload="metadata" />
+    <VideoPlayer key={fallback ? 'format-file' : 'format-mux'} title={TITLE} poster={POSTER}>
+      <VideoSkin resumeKey="" themeSwitch>
+        {fallback ? (
+          <Video src={SRC} playsInline preload="metadata" crossOrigin="">
+            {tracks}
+          </Video>
+        ) : (
+          <MuxVideo src={MUX_SRC} playsInline preload="metadata" crossOrigin="" onError={() => setFallback(true)}>
+            {tracks}
+          </MuxVideo>
+        )}
       </VideoSkin>
     </VideoPlayer>
   );

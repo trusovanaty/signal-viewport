@@ -12,6 +12,8 @@ export interface Copy {
   buffering: string;
   ended: string;
   error: string;
+  /** The headline of the error dialog: the ruler idea of the 404 page (the moment is not on the ruler). */
+  errorLead: string;
   chapters: string;
   /** The colour option in the settings menu and its two values. */
   colour: string;
@@ -43,6 +45,7 @@ const en: Copy = {
   buffering: 'Buffering',
   ended: 'Ended',
   error: 'Error',
+  errorLead: 'This moment is not on the ruler.',
   chapters: 'Chapters',
   colour: 'Colour',
   colourRed: 'Red',
@@ -67,6 +70,7 @@ const uk: Copy = {
   buffering: 'Завантаження',
   ended: 'Завершено',
   error: 'Помилка',
+  errorLead: 'Цієї миті немає на лінійці.',
   chapters: 'Розділи',
   colour: 'Колір',
   colourRed: 'Червоний',
