@@ -485,3 +485,8 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 
 - The big Start / Replay button is 64 px (icon 28 px) in a narrow player instead of 96 px (icon 40 px): on a phone the picture is only about 205 px tall and the old button covered almost a third of it, and the face after the end. It stays above the 48 px touch target; wide players keep 96 px.
 - A tap with a finger now pauses and resumes the video, anywhere on the picture (in the page and in full screen); before, a touch tap was mapped to "show or hide the controls", which did nothing because the panel is always visible. A double tap still seeks (sides) or toggles full screen (centre); a mouse click still pauses from the centre. Checked with touch emulation in Chrome: tap plays, tap at the left edge pauses, tap at the right edge resumes, a double tap on the right seeks about 10 s forward and keeps playing. Not checked: a real phone in real full screen.
+
+## Any format in mono; the drawn line only where there was one (Nov 14)
+
+- Mono, Any format: each of the three frames gets the same quiet backing as the main player (an 8 px spread shadow in `--surface-quiet`, drawn outside the box so nothing moves), because the white panel melted into the white page.
+- The line that draws itself on scroll now exists only on sections that already have a line on top (`data-rv-line`); the dark bands ("Time control", "Player states") have none, so the stray stripe above them is gone.

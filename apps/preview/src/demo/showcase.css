@@ -1515,3 +1515,10 @@
   padding: 0 22px;
   font-size: 18px;
 }
+
+/* Any format in mono: the white panel would melt into the white page, so each frame gets the same quiet backing as the
+   main player, drawn outside its box (a spread shadow) so nothing in the layout moves. It is 8 px here: the frames stand
+   closer to each other than the main player does to its neighbours. */
+.sc-format .signal-skin[data-signal-theme='mono'] {
+  box-shadow: 0 0 0 var(--space-2) var(--surface-quiet);
+}

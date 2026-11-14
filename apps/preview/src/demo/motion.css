@@ -81,11 +81,11 @@
     opacity: 1;
     transform: none;
   }
-  html.js-reveal .sc-section[data-rv] {
+  html.js-reveal .sc-section[data-rv-line] {
     position: relative;
     border-top-color: transparent;
   }
-  html.js-reveal .sc-section[data-rv]::before {
+  html.js-reveal .sc-section[data-rv-line]::before {
     content: '';
     position: absolute;
     left: 0;
@@ -97,7 +97,7 @@
     transform-origin: left center;
     transition: transform 700ms var(--ease-line);
   }
-  html.js-reveal .sc-section[data-rv].is-in::before {
+  html.js-reveal .sc-section[data-rv-line].is-in::before {
     transform: scaleX(1);
   }
 }

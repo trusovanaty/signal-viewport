@@ -13,6 +13,8 @@ export function initReveal(): () => void {
   const marked: HTMLElement[] = [];
   for (const section of sections) {
     section.setAttribute('data-rv', '');
+    // Only a section that already has a line on top gets the line that draws itself (the dark bands have none).
+    if (parseFloat(getComputedStyle(section).borderTopWidth) > 0) section.setAttribute('data-rv-line', '');
     Array.from(section.children).forEach((child, i) => {
       const item = child as HTMLElement;
       item.classList.add('rv-item');
@@ -37,7 +39,10 @@ export function initReveal(): () => void {
   return () => {
     observer.disconnect();
     document.documentElement.classList.remove('js-reveal');
-    sections.forEach((section) => section.removeAttribute('data-rv'));
+    sections.forEach((section) => {
+      section.removeAttribute('data-rv');
+      section.removeAttribute('data-rv-line');
+    });
     marked.forEach((item) => {
       item.classList.remove('rv-item');
       item.style.removeProperty('--d');
