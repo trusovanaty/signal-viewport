@@ -17,6 +17,8 @@ const params = new URLSearchParams(location.search);
 const LOCALE = (params.get('lang') ?? 'en').trim() || 'en';
 
 const SHOWCASE = './showcase/';
+/** The pictures that show the skin's own words (status, menu, error) exist in each language: `name-uk.webp` for Ukrainian. */
+const SUFFIX = LOCALE.startsWith('uk') ? '-uk' : '';
 const REPO = 'https://github.com/trusovanaty/signal-viewport';
 /** Measured widths of the captured frames: a 375 px window holds a 343 px player, a 320 px window a 288 px one. */
 const FRAMES = { wide: 1120, window: 375, narrow: 343, narrowHeight: 383 };
@@ -278,7 +280,7 @@ function Layers({ copy }: { copy: Copy['layers'] }) {
             {LAYER_PARTS.map((part, i) => (
               <div key={part} className="sc-layer" aria-hidden="true">
                 <span className="sc-node">{String(i + 1).padStart(2, '0')}</span>
-                <div className="sc-slice" data-part={part} style={{ backgroundImage: `url(${SHOWCASE}desk-start.webp)` }} />
+                <div className="sc-slice" data-part={part} style={{ backgroundImage: `url(${SHOWCASE}desk-start${SUFFIX}.webp)` }} />
               </div>
             ))}
           </div>
@@ -386,7 +388,7 @@ function Responsive({ copy, formats }: { copy: Copy['responsive']; formats: Copy
         <figure key={frame.src} className="sc-frame sc-pair">
           <p className="sc-pair-label">{frame.label}</p>
           <img
-            src={`${SHOWCASE}${frame.src}.webp`}
+            src={`${SHOWCASE}${frame.src}${SUFFIX}.webp`}
             width={FRAMES.narrow}
             height={FRAMES.narrowHeight}
             alt={frame.alt}
@@ -421,7 +423,7 @@ function States({ copy }: { copy: Copy['states'] }) {
                   key={key}
                   className="sc-shot-img"
                   data-active={active === key ? '' : undefined}
-                  src={`${SHOWCASE}${STATE_IMAGE[key]}.webp`}
+                  src={`${SHOWCASE}${STATE_IMAGE[key]}${SUFFIX}.webp`}
                   width={FRAME.w}
                   height={FRAME.h}
                   alt={copy.alts[key]}

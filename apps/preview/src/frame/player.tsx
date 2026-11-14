@@ -1,3 +1,4 @@
+import { useLocale } from '@videojs/react/i18n';
 import { useState } from 'react';
 import { MuxVideo } from '@videojs/react/media/mux-video';
 import { Video, VideoPlayer } from '@videojs/react/video';
@@ -24,9 +25,23 @@ export const MATERIAL: { author: string | null; about: string | null; isDemo: bo
   isDemo: true,
 };
 /** Tracks served from `apps/preview/public/media`: chapters, captions, and a ruler preview storyboard (a sprite sheet). */
-const CHAPTERS = './media/chapters.vtt';
-const CAPTIONS = './media/captions.vtt';
 const THUMBNAILS = './media/thumbs.vtt';
+const NO_FALLBACK = new URLSearchParams(location.search).has('nofallback');
+
+/** The demo's chapters and captions in the player's language (English, or Ukrainian when the page is). */
+function useDemoTracks() {
+  const uk = useLocale().startsWith('uk');
+  const lang = uk ? 'uk' : 'en';
+  const label = uk ? 'Українська' : 'English';
+  const suffix = uk ? '.uk' : '';
+  return (
+    <>
+      <track kind="chapters" label={label} srcLang={lang} src={`./media/chapters${suffix}.vtt`} default />
+      <track kind="subtitles" label={label} srcLang={lang} src={`./media/captions${suffix}.vtt`} />
+      <track kind="metadata" label="thumbnails" src={THUMBNAILS} default />
+    </>
+  );
+}
 
 /** A video the visitor opened from their own computer: a blob address made in this browser, and the file's name. */
 export interface LocalMedia {
@@ -67,14 +82,10 @@ export function Player({
 
 /** The demo film: Mux first, the bundled MP4 if the stream fails to load (once; the player restarts clean on the file). */
 function DemoPlayer({ media }: { media?: PlaybackProps }) {
-  const [fallback, setFallback] = useState(false);
-  const tracks = (
-    <>
-      <track kind="chapters" label="English" srcLang="en" src={CHAPTERS} default />
-      <track kind="subtitles" label="English" srcLang="en" src={CAPTIONS} />
-      <track kind="metadata" label="thumbnails" src={THUMBNAILS} default />
-    </>
-  );
+  const [fallback, setFallbackState] = useState(false);
+  // `?nofallback` keeps the Mux failure on screen (to look at, or to capture, the error state).
+  const setFallback = (value: boolean) => (NO_FALLBACK ? undefined : setFallbackState(value));
+  const tracks = useDemoTracks();
   return (
     <VideoPlayer key={fallback ? 'demo-file' : 'demo-mux'} title={TITLE} poster={POSTER}>
       <VideoSkin themeSwitch>
@@ -100,13 +111,7 @@ function DemoPlayer({ media }: { media?: PlaybackProps }) {
  */
 export function FormatPlayer() {
   const [fallback, setFallback] = useState(false);
-  const tracks = (
-    <>
-      <track kind="chapters" label="English" srcLang="en" src={CHAPTERS} default />
-      <track kind="subtitles" label="English" srcLang="en" src={CAPTIONS} />
-      <track kind="metadata" label="thumbnails" src={THUMBNAILS} default />
-    </>
-  );
+  const tracks = useDemoTracks();
   return (
     <VideoPlayer key={fallback ? 'format-file' : 'format-mux'} title={TITLE} poster={POSTER}>
       <VideoSkin resumeKey="" themeSwitch>

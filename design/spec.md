@@ -455,3 +455,10 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 - Error dialog in the idea of the 404 page: a short ruler with the pin past its last tick, the line "This moment is not on the ruler." (Video.js's own title stays as the accessible name), then the friendly sentence, the technical detail line and Try again / OK. The ruler is hidden in small players (container under 560 px). The showcase Error picture was re-captured.
 
 - The three frames in Any format now have the same menu as the main player (Speed, Captions, Chapters, Colour; no Quality, they play the bundled MP4): they carry the chapters, captions and ruler-preview tracks and follow the shared Red/Mono choice.
+
+## Ukrainian pictures and the server code in the error (Nov 14)
+
+- The pictures that show the skin's own words now exist in Ukrainian: `desk-start-uk`, `g-focus-uk`, `g-settings-uk`, `g-captions-uk`, `g-restored-uk`, `g-loading-uk`, `g-error-uk`, `mob-playing-uk`, `mob-settings-uk` (the landing picks the suffix from `?lang=uk`). The pictures that show only numbers and icons (timeline, time field, focus close-ups) are shared by both languages.
+- The demo's chapters and captions have a Ukrainian pair (`chapters.uk.vtt`, `captions.uk.vtt`), chosen by the player's language, so the Ukrainian page shows Ukrainian chapters and subtitles.
+- The error dialog shows the server's answer big, with the pin as its full stop, when the engine's message carries one ("status 404"); with no answer (offline) only the ruler and the line show. `?nofallback` keeps a Mux failure on screen (the demo normally falls back to the bundled MP4), which is how the Error picture is captured (a real 404 from the stream). The engine's own detail line stays English (it is not translated).
+- Checked: every UK string is Cyrillic except key names, "Safari." and the font names.
