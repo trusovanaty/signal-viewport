@@ -243,9 +243,9 @@ export const COPY: Record<string, Copy> = {
         ['Typography', 'Onest + IBM Plex Mono · OFL'],
         ['Demo film', 'Freefall Bloom · AI-generated film and music, by the author'],
       ],
-      rightsTitle: 'Demo footage & rights',
+      rightsTitle: 'Demo footage',
       rights: [
-        'The film is AI-generated and made by the author for this page, and the music is the author’s too. The terms for reusing it depend on the generator’s terms; they have not been confirmed here, so check them before reusing the film.',
+        'The film and the music are the author’s own work, made for this page.',
         'It is shown only to demonstrate the skin. This is a demonstration, not a client project.',
         'Player framework: Video.js v10, used under its own license.',
       ],
@@ -413,9 +413,9 @@ export const COPY: Record<string, Copy> = {
         ['Типографіка', 'Onest + IBM Plex Mono · OFL'],
         ['Демо-фільм', 'Freefall Bloom · фільм згенеровано ШІ, музика авторки'],
       ],
-      rightsTitle: 'Демо-відео та права',
+      rightsTitle: 'Демо-відео',
       rights: [
-        'Фільм згенеровано ШІ та створено авторкою для цієї сторінки, музика теж авторки. Умови його повторного використання залежать від умов генератора; тут їх не підтверджено, тож перевірте їх, перш ніж використовувати фільм деінде.',
+        'Фільм і музика — власна робота авторки, створена для цієї сторінки.',
         'Тут він лише демонструє скін. Це демонстрація, а не клієнтський проєкт.',
         'Фреймворк плеєра: Video.js v10 за його власною ліцензією.',
       ],

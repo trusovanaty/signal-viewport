@@ -150,7 +150,7 @@ A real 36:00 MP4 was generated with ffmpeg (test pattern with a running counter,
 
 ## Demo footage swapped to the fashion film
 
-- The showcase player now plays `apps/preview/public/media/scarlet-walk.mp4`, an AI-generated 10-second fashion film (Kling 2.6 Pro through Flora: two 5-second clips, the second started from the last frame of the first, joined by a straight cut). A plain MP4 through the `Video` component; no Mux. Title "Scarlet Walk", labeled "Demo footage"; the author line stays empty. Credits tell readers to check the generator's terms before reusing it.
+- The showcase player now plays `apps/preview/public/media/scarlet-walk.mp4`, an AI-generated 10-second fashion film (Kling 2.6 Pro through Flora: two 5-second clips, the second started from the last frame of the first, joined by a straight cut). A plain MP4 through the `Video` component; no Mux. Title "Scarlet Walk", labeled "Demo footage"; the author line stays empty. Credits say the film and the music are the author's own work.
 - Tracks written for it: chapters (Approach, Silhouette), English captions (three short lines of original text), and a ruler storyboard (a 10-frame sprite sheet `thumbs.jpg` with `thumbs.vtt`), so previews, chapters and captions all work. Quality is absent (a single MP4), as the skin intends.
 - All showcase frames and the recorded clip were captured again from this video. The Restored frame is taken on a 36-minute copy (the film looped, `apps/preview/_local/long-scarlet.mp4`, git-ignored), because saved positions apply only to videos longer than 15 seconds; the page says so. The Loading and Error frames come from stalling and blocking the MP4.
 - Checks again (Chrome, Windows): widths 320, 375, 768, 1440 without horizontal scroll or console errors, all images and the clip load, all six gallery toggles load their images, the recording plays from its button while the main player stays idle, the workbench and preview page load the skin.
@@ -462,3 +462,8 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 - The demo's chapters and captions have a Ukrainian pair (`chapters.uk.vtt`, `captions.uk.vtt`), chosen by the player's language, so the Ukrainian page shows Ukrainian chapters and subtitles.
 - The error dialog shows the server's answer big, with the pin as its full stop, when the engine's message carries one ("status 404"); with no answer (offline) only the ruler and the line show. `?nofallback` keeps a Mux failure on screen (the demo normally falls back to the bundled MP4), which is how the Error picture is captured (a real 404 from the stream). The engine's own detail line stays English (it is not translated).
 - Checked: every UK string is Cyrillic except key names, "Safari." and the font names.
+
+## Triangles and the error code, simplified (Nov 14)
+
+- The red triangle after section headlines was removed: it read as a show/hide marker. Headlines end with a plain full stop again. The triangle stays only where it is a pure accent: after the product name on the main screen and on the 404 page.
+- The error dialog no longer prints a big code. It keeps the ruler with the pin, the line "This moment is not on the ruler." and the grey detail line, which already names the kind of error (for example "status 404"). The Error pictures (EN and UK) were re-captured.

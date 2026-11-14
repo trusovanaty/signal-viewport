@@ -40,19 +40,14 @@ const STATE_IMAGE: Record<StateKey, string> = {
 };
 const FRAME = { w: 1120, h: 758 };
 
-/** `stop`: a headline's full stop is drawn as the ruler's pin, a small red triangle, like the one after the product name. */
-function Lines({ text, stop = false }: { text: string; stop?: boolean }) {
+function Lines({ text }: { text: string }) {
   return (
     <>
-      {text.split('\n').map((line) => {
-        const end = stop && line.endsWith('.');
-        return (
-          <span key={line} className="sc-line">
-            {end ? line.slice(0, -1) : line}
-            {end ? <span className="sc-stop" aria-hidden="true" /> : null}{' '}
-          </span>
-        );
-      })}
+      {text.split('\n').map((line) => (
+        <span key={line} className="sc-line">
+          {line}{' '}
+        </span>
+      ))}
     </>
   );
 }
@@ -245,7 +240,7 @@ function SectionHead({ id, title, text }: { id: string; title: string; text?: st
   return (
     <div className="sc-head">
       <h2 id={id}>
-        <Lines text={title} stop />
+        <Lines text={title} />
       </h2>
       {text ? <p>{text}</p> : null}
     </div>
@@ -380,7 +375,7 @@ function Responsive({ copy, formats }: { copy: Copy['responsive']; formats: Copy
     <section className="sc-section sc-responsive" aria-labelledby="sc-responsive">
       <div className="sc-responsive-text">
         <h2 id="sc-responsive">
-          <Lines text={copy.title} stop />
+          <Lines text={copy.title} />
         </h2>
         <p>{copy.text}</p>
       </div>

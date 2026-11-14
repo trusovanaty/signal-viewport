@@ -1084,22 +1084,3 @@
   .signal-error-ruler { display: none; }
   .signal-error-lead { font-size: 15px; line-height: 20px; }
 }
-
-/* The server's answer (404, 503...) when the engine reports one: big type with the pin as its full stop, like the 404 page. */
-.signal-error-code {
-  font-size: 44px;
-  font-weight: 600;
-  line-height: 0.9;
-  letter-spacing: -0.045em;
-}
-.signal-error-stop {
-  display: inline-block;
-  width: 0.26em;
-  height: 0.2em;
-  margin-left: 0.06em;
-  background: var(--signal-red);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-}
-@container media-root (max-width: 559.98px) {
-  .signal-error-code { display: none; }
-}

@@ -51,18 +51,9 @@ function ErrorText() {
   );
 }
 
-/** The server's answer, when the engine's message carries one ("... (status 404) ..."): shown big, like the 404 page. */
-function useHttpStatus(): number | null {
-  const message = usePlayer((s) => s.error?.message) ?? '';
-  const match = /status\s+(\d{3})/i.exec(message);
-  const status = match ? Number(match[1]) : null;
-  return status !== null && status >= 400 && status < 600 ? status : null;
-}
-
 export function ErrorDialog() {
   const retry = useRetry();
   const copy = useCopy();
-  const status = useHttpStatus();
   return (
     <ErrorDialogPrimitive.Root>
       <ErrorDialogPrimitive.Backdrop
@@ -76,12 +67,6 @@ export function ErrorDialog() {
           'media-high-contrast:border media-high-contrast:border-solid media-high-contrast:border-current forced-colors:border forced-colors:border-solid forced-colors:border-[CanvasText]'
         )}
       >
-        {status ? (
-          <div className="signal-error-code" aria-hidden="true">
-            {status}
-            <span className="signal-error-stop" />
-          </div>
-        ) : null}
         {/* The ruler of the player with the pin past its last tick: this moment is not on it (as on the 404 page). */}
         <div className="signal-error-ruler" aria-hidden="true">
           <span className="signal-error-ticks" />
