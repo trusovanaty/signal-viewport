@@ -467,3 +467,10 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 
 - The red triangle after section headlines was removed: it read as a show/hide marker. Headlines end with a plain full stop again. The triangle stays only where it is a pure accent: after the product name on the main screen and on the 404 page.
 - The error dialog no longer prints a big code. It keeps the ruler with the pin, the line "This moment is not on the ruler." and the grey detail line, which already names the kind of error (for example "status 404"). The Error pictures (EN and UK) were re-captured.
+
+## Light motion on the landing (Nov 14)
+
+- One authored moment, in the language of the site (the ruler and its pin): when the page opens, the ruler under the name draws itself from zero to the right (about 0.9 s), the red pin lands on zero, the triangle after the name lands with it, and the name rises from under its baseline. It plays once. CSS only (`apps/preview/src/demo/motion.css`), transform and clip-path, no layout shift.
+- Quiet feedback: the picture of a player state fades into the next one (160-240 ms), and the page's own controls answer a hover with a 140 ms colour change.
+- Reduce motion: no movement at all (the header is simply there, the pictures swap without a fade); the player's own motion is untouched.
+- Deliberately not done: scroll reveals on every section, parallax, looping effects.

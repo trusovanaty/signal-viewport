@@ -6,6 +6,7 @@ import '@/skin.css';
 import './tokens.css';
 import './demo.css';
 import './showcase.css';
+import './motion.css';
 import { setSignalTheme, useSignalTheme } from '@/video/shared/preferences';
 import { FormatPlayer, MATERIAL, Player, TITLE, type LocalMedia } from '../frame/player';
 import { COPY, EXAMPLE, STATES, type Copy, type StateKey } from './copy';

@@ -1,0 +1,102 @@
+/*
+ * Motion of the landing page, kept light and in the language of the site: the ruler and its pin.
+ *
+ * One authored moment: when the page opens, the ruler under the name draws itself from zero to the right and the red pin
+ * lands on zero, while the name rises from under its baseline. It plays once and takes about a second.
+ * Everything else is quiet feedback: the picture of a player state fades into the next one, and buttons answer a hover.
+ *
+ * The page is fully visible without any of this. With "reduce motion" there is no movement at all: the header is simply
+ * there, and the pictures swap without a fade.
+ */
+
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Quiet feedback: short colour changes on the page's own controls (the player has its own). */
+.demo-lang a,
+.sc-btn,
+.sc-toggles button {
+  transition:
+    color 140ms var(--ease-out),
+    background-color 140ms var(--ease-out),
+    border-color 140ms var(--ease-out);
+}
+
+/* A player state fades into the next one (the pictures are stacked in one place). */
+.sc-states .sc-shot-img {
+  opacity: 0;
+  transition:
+    opacity 160ms var(--ease-out),
+    visibility 0s linear 160ms;
+}
+.sc-states .sc-shot-img[data-active] {
+  opacity: 1;
+  transition: opacity 240ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The name rises from under its baseline, line by line. */
+  .demo-title > span {
+    animation: demo-rise 620ms var(--ease-out) both;
+  }
+  .demo-title > span:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  /* The ruler draws itself from zero, then the pin lands on zero. */
+  .demo-ruler::before,
+  .demo-ruler-ticks {
+    animation: demo-draw 900ms var(--ease-out) 160ms both;
+  }
+  .demo-ruler-pin {
+    animation: demo-land 460ms var(--ease-out) 760ms both;
+  }
+  /* The pin after the name lands with it. */
+  .demo-dot {
+    animation: demo-land 460ms var(--ease-out) 820ms both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-states .sc-shot-img,
+  .sc-states .sc-shot-img[data-active] {
+    transition: none;
+  }
+  .demo-lang a,
+  .sc-btn,
+  .sc-toggles button {
+    transition: none;
+  }
+}
+
+@keyframes demo-rise {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.14em);
+  }
+  to {
+    clip-path: inset(-4% -4% -4% -4%);
+    transform: none;
+  }
+}
+
+@keyframes demo-draw {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes demo-land {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
