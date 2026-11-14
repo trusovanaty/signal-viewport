@@ -1004,11 +1004,12 @@
 }
 
 /*
- * Mono theme: the same skin without the red. Set data-theme="mono" on the skin or on any ancestor. Only the roles above
+ * Mono theme: the same skin without the red. Set data-theme="mono" on any ancestor, or turn on the skin's `themeSwitch` and let the viewer choose in the settings menu. Only the roles above
  * change: a white panel, black ink, grey quiet parts (#6b6b6b is 5.3:1 on white), black marks, and a focus frame that is
  * black outside and white inside. Black surfaces (title strip, menus, plates, the play button) stay as they are.
  */
 .signal-skin[data-theme='mono'],
+.signal-skin[data-signal-theme='mono'],
 [data-theme='mono'] .signal-skin {
   --signal-red: #ffffff;
   --signal-dim: #6b6b6b;
@@ -1017,11 +1018,13 @@
   --signal-ring-gap: #ffffff;
 }
 .signal-skin[data-theme='mono'] .signal-panel,
+.signal-skin[data-signal-theme='mono'] .signal-panel,
 [data-theme='mono'] .signal-skin .signal-panel {
   /* A black edge between the picture and the white panel, drawn inside, so the panel keeps its height. */
   box-shadow: inset 0 2px 0 var(--signal-surface);
 }
 .signal-skin[data-theme='mono'] .signal-btn--play:hover,
+.signal-skin[data-signal-theme='mono'] .signal-btn--play:hover,
 [data-theme='mono'] .signal-skin .signal-btn--play:hover {
   background: #4d4d4d;
   color: var(--signal-paper);

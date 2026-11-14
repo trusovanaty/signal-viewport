@@ -2,12 +2,12 @@
 
 import { Menu, Thumbnail, useCaptionsOptions, usePlaybackRateOptions, useQualityOptions } from '@videojs/react';
 import { usePlayer } from '@videojs/react/video';
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useContext, useEffect, useRef } from 'react';
 
 import { SettingsIcon } from './icons';
 import { formatTime } from '../format';
 import { useCopy } from '../i18n';
-import { useHasSavedPreferences, useResetPreferences } from './preferences';
+import { ThemeSwitchContext, setSignalTheme, useHasSavedPreferences, useResetPreferences, useSignalTheme } from './preferences';
 import { useHasSavedPosition, useStartOver } from './resume';
 
 /**
@@ -136,14 +136,29 @@ export function SettingsMenu() {
   const resetPreferences = useResetPreferences();
   const hasPosition = useHasSavedPosition();
   const startOver = useStartOver();
+  const themeSwitch = useContext(ThemeSwitchContext);
+  const theme = useSignalTheme();
 
   const hasRate = rate?.state.availability === 'available';
   const hasQuality = quality?.state.availability === 'available';
   const hasCaptions = captions?.state.availability === 'available';
   const hasChapters = !!cues && cues.length > 0;
-  if (!hasRate && !hasQuality && !hasCaptions && !hasChapters) return null;
+  if (!hasRate && !hasQuality && !hasCaptions && !hasChapters && !themeSwitch) return null;
 
-  const count = Number(hasRate) + Number(hasQuality) + Number(hasCaptions) + Number(hasChapters);
+  const count = Number(hasRate) + Number(hasQuality) + Number(hasCaptions) + Number(hasChapters) + Number(themeSwitch);
+
+  // Colour is an option of the skin itself, offered only where the host page turned it on.
+  const colourPicker: Picker | null = themeSwitch
+    ? {
+        value: theme,
+        setValue: (v) => setSignalTheme(v === 'mono' ? 'mono' : 'red'),
+        selectedLabel: theme === 'mono' ? copy.colourMono : copy.colourRed,
+        options: [
+          { value: 'red', label: copy.colourRed },
+          { value: 'mono', label: copy.colourMono },
+        ],
+      }
+    : null;
 
   // Chapters come from the source's chapter track. A frame is shown only when the source also has a storyboard.
   let activeChapter = 0;
@@ -205,10 +220,12 @@ export function SettingsMenu() {
           {count === 1 && qualityPicker ? <Radios label={copy.quality} picker={qualityPicker} note={qualityNote} /> : null}
           {count === 1 && hasCaptions ? <Radios label={copy.captions} picker={captions} /> : null}
           {count === 1 && chaptersPicker ? <Radios label={copy.chapters} picker={chaptersPicker} /> : null}
+          {count === 1 && colourPicker ? <Radios label={copy.colour} picker={colourPicker} /> : null}
           {count > 1 && hasRate ? <Section title={copy.speed} picker={rate} /> : null}
           {count > 1 && qualityPicker ? <Section title={copy.quality} picker={qualityPicker} note={qualityNote} /> : null}
           {count > 1 && hasCaptions ? <Section title={copy.captions} picker={captions} /> : null}
           {count > 1 && chaptersPicker ? <Section title={copy.chapters} picker={chaptersPicker} /> : null}
+          {count > 1 && colourPicker ? <Section title={copy.colour} picker={colourPicker} /> : null}
           {hasPosition ? (
             <Menu.Item className="signal-menu-item signal-menu-reset" onClick={startOver}>
               {copy.startOver}

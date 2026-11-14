@@ -14,7 +14,7 @@ import { VideoGestures } from './behaviors/gestures';
 import { VideoHotkeys } from './behaviors/hotkeys';
 import { ErrorDialog } from './shared/error-dialog';
 import { Indicators } from './shared/indicators';
-import { Preferences } from './shared/preferences';
+import { Preferences, ThemeSwitchContext, useSignalTheme } from './shared/preferences';
 import { Resume } from './shared/resume';
 import { Panel } from './shared/panel';
 import { SeekIndicator } from './shared/seek-indicator';
@@ -30,9 +30,15 @@ export interface VideoSkinProps extends Omit<ContainerPrimitive.Props, 'children
   renderThumbnail?: SliderPrimitive.Thumbnail.ImageProps['render'];
   /** Identifies this video for saved resume positions. Defaults to the video's title; without either, nothing is saved. */
   resumeKey?: string;
+  /**
+   * Adds a Colour option (Red / Mono) to the settings menu. Off by default: on a real site the colour is the site's
+   * choice. The viewer's choice is saved with the other preferences.
+   */
+  themeSwitch?: boolean;
 }
 
-export function VideoSkin({ children, className, renderPoster, resumeKey, ...props }: VideoSkinProps = {}) {
+export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, ...props }: VideoSkinProps = {}) {
+  const theme = useSignalTheme();
   return (
     <ContainerPrimitive
       className={cn(
@@ -43,8 +49,10 @@ export function VideoSkin({ children, className, renderPoster, resumeKey, ...pro
       )}
       data-theme="scaffold"
       data-preset="video"
+      data-signal-theme={themeSwitch && theme === 'mono' ? 'mono' : undefined}
       {...props}
     >
+      <ThemeSwitchContext.Provider value={!!themeSwitch}>
       <TitleBar />
       <div className="signal-viewport">
         {children}
@@ -63,6 +71,7 @@ export function VideoSkin({ children, className, renderPoster, resumeKey, ...pro
       <VideoHotkeys />
       <VideoGestures />
       <StatusAnnouncer />
+      </ThemeSwitchContext.Provider>
     </ContainerPrimitive>
   );
 }

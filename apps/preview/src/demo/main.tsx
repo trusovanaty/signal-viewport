@@ -6,6 +6,7 @@ import '@/skin.css';
 import './tokens.css';
 import './demo.css';
 import './showcase.css';
+import { setSignalTheme, useSignalTheme } from '@/video/shared/preferences';
 import { FormatPlayer, MATERIAL, Player, TITLE, type LocalMedia } from '../frame/player';
 import { COPY, EXAMPLE, STATES, type Copy, type StateKey } from './copy';
 
@@ -37,14 +38,19 @@ const STATE_IMAGE: Record<StateKey, string> = {
 };
 const FRAME = { w: 1120, h: 758 };
 
-function Lines({ text }: { text: string }) {
+/** `stop`: a headline's full stop is drawn as the ruler's pin, a small red triangle, like the one after the product name. */
+function Lines({ text, stop = false }: { text: string; stop?: boolean }) {
   return (
     <>
-      {text.split('\n').map((line) => (
-        <span key={line} className="sc-line">
-          {line}{' '}
-        </span>
-      ))}
+      {text.split('\n').map((line) => {
+        const end = stop && line.endsWith('.');
+        return (
+          <span key={line} className="sc-line">
+            {end ? line.slice(0, -1) : line}
+            {end ? <span className="sc-stop" aria-hidden="true" /> : null}{' '}
+          </span>
+        );
+      })}
     </>
   );
 }
@@ -166,6 +172,7 @@ function Credit({
             </button>
           ))}
         </div>
+        <p className="demo-note">{copy.theme.note}</p>
       </div>
       <div className="demo-cell demo-local">
         <span className="demo-cell-label">{copy.local.region}</span>
@@ -236,7 +243,7 @@ function SectionHead({ id, title, text }: { id: string; title: string; text?: st
   return (
     <div className="sc-head">
       <h2 id={id}>
-        <Lines text={title} />
+        <Lines text={title} stop />
       </h2>
       {text ? <p>{text}</p> : null}
     </div>
@@ -371,7 +378,7 @@ function Responsive({ copy, formats }: { copy: Copy['responsive']; formats: Copy
     <section className="sc-section sc-responsive" aria-labelledby="sc-responsive">
       <div className="sc-responsive-text">
         <h2 id="sc-responsive">
-          <Lines text={copy.title} />
+          <Lines text={copy.title} stop />
         </h2>
         <p>{copy.text}</p>
       </div>
@@ -611,7 +618,8 @@ function Demo() {
   const [notVideo, setNotVideo] = useState(false);
   const [failed, setFailed] = useState(false);
   const [view, setView] = useState<View>('desktop');
-  const [theme, setTheme] = useState<Theme>('red');
+  // The colour is the skin's own saved choice: the panel switch and the player's settings menu change the same value.
+  const theme = useSignalTheme();
   useEffect(() => {
     const url = local?.url;
     return () => {
@@ -674,7 +682,7 @@ function Demo() {
             </div>
             <div className="demo-side">
               <Intro copy={copy} />
-              <Credit copy={copy} locale={locale} local={local} onPick={pick} onRestore={restore} notVideo={notVideo} failed={failed} view={view} onView={setView} theme={theme} onTheme={setTheme} />
+              <Credit copy={copy} locale={locale} local={local} onPick={pick} onRestore={restore} notVideo={notVideo} failed={failed} view={view} onView={setView} theme={theme} onTheme={setSignalTheme} />
             </div>
           </div>
         </div>

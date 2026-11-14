@@ -5,11 +5,12 @@ import { createRoot } from 'react-dom/client';
 import '@/skin.css';
 import './preview.css';
 import { playbackProps, playerStyles } from '../shell/params';
+import { setSignalTheme } from '@/video/shared/preferences';
 import { initialParams, onParamsChange } from './frame';
 import { Player } from './player';
 
 // `?theme=mono` shows the skin's mono theme (white panel, black ink), e.g. when this page is embedded on a site.
-const THEME = new URLSearchParams(location.search).get('theme') === 'mono' ? 'mono' : undefined;
+if (new URLSearchParams(location.search).get('theme') === 'mono') setSignalTheme('mono', false);
 
 function Preview() {
   const [params, setParams] = useState(initialParams);
@@ -19,7 +20,7 @@ function Preview() {
   return (
     // The provider loads Video.js's built-in translations for the selected language.
     <I18nProvider locale={params.locale}>
-      <div className="preview-player" data-theme={THEME} style={playerStyles(params) as CSSProperties}>
+      <div className="preview-player" style={playerStyles(params) as CSSProperties}>
         <Player media={playbackProps(params)} />
       </div>
     </I18nProvider>

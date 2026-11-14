@@ -10,7 +10,7 @@ export interface Copy {
   about: string;
   hint: string;
   view: { group: string; desktop: string; mobile: string };
-  theme: { group: string; red: string; mono: string };
+  theme: { group: string; red: string; mono: string; note: string };
   source: string;
   keysTitle: string;
   keys: [string, string][];
@@ -87,7 +87,7 @@ export const COPY: Record<string, Copy> = {
     tagline: 'Every frame.\nWithin reach.',
     lead: 'A Video.js v10 skin with a clear picture and a timeline made to be read.',
     demoTag: 'Demo footage',
-    about: 'An AI-generated fashion film (Kling 2.6 Pro, made through Flora), used here as demo footage.',
+    about: 'An AI-generated animated film with its own music, both made by the author, used here as demo footage.',
     hint: 'Play. Scrub. Find your moment.',
     local: {
       prompt: 'Try it with your own video.',
@@ -100,7 +100,12 @@ export const COPY: Record<string, Copy> = {
       region: 'Your video',
     },
     view: { group: 'Player width', desktop: 'Desktop', mobile: 'Mobile' },
-    theme: { group: 'Player colour', red: 'Red', mono: 'Mono' },
+    theme: {
+      group: 'Player colour',
+      red: 'Red',
+      mono: 'Mono',
+      note: 'Red is the signature look. Mono is neutral and fits most sites: one attribute, data-theme="mono".',
+    },
     source: 'Source',
     keysTitle: 'Keyboard shortcuts',
     keys: [
@@ -161,9 +166,9 @@ export const COPY: Record<string, Copy> = {
       labels: { focus: 'Focus', settings: 'Settings', captions: 'Captions', restored: 'Restored', loading: 'Loading', error: 'Error' },
       notes: {
         focus: 'A clear focus marker on the ruler. A contrasting ring on buttons.',
-        settings: 'The menu shares the panel’s square geometry. The selected item is marked with a sign, not a fill.',
+        settings: 'The menu shares the panel’s square geometry. The selected item is marked with a sign, not a fill. The Colour option switches the whole skin between Red and Mono.',
         captions: 'Captions sit above the control strip, never under it.',
-        restored: 'A saved position returns with a short “Resumed” note. Shown on a 30-second copy: positions are saved for videos longer than 15 seconds.',
+        restored: 'A saved position returns with a short “Resumed” note. Positions are saved for videos longer than 15 seconds, so the 30-second demo film shows it.',
         loading: 'A piece of the ruler on a black plate: the pin steps along the ticks. The status says Buffering, not just an icon.',
         error: 'An icon and words, never color alone, with Try again as the first action.',
       },
@@ -236,11 +241,11 @@ export const COPY: Record<string, Copy> = {
       groups: [
         ['Design & code', 'Natalia Trusova · Apache 2.0'],
         ['Typography', 'Onest + IBM Plex Mono · OFL'],
-        ['Demo film', 'Scarlet Walk · AI-generated with Kling 2.6 Pro via Flora'],
+        ['Demo film', 'Freefall Bloom · AI-generated film and music, by the author'],
       ],
       rightsTitle: 'Demo footage & rights',
       rights: [
-        'The film is AI-generated, made for this page with Kling 2.6 Pro through Flora. The terms for reusing it depend on the generator’s terms; they have not been confirmed here, so check them before reusing the film.',
+        'The film is AI-generated and made by the author for this page, and the music is the author’s too. The terms for reusing it depend on the generator’s terms; they have not been confirmed here, so check them before reusing the film.',
         'It is shown only to demonstrate the skin. This is a demonstration, not a client project.',
         'Player framework: Video.js v10, used under its own license.',
       ],
@@ -252,7 +257,7 @@ export const COPY: Record<string, Copy> = {
     tagline: 'Кожен кадр.\nПід контролем.',
     lead: 'Скін для Video.js v10 із чистим кадром і шкалою часу, яку легко читати.',
     demoTag: 'Демо-відео',
-    about: 'Модний фільм, згенерований ШІ (Kling 2.6 Pro, через Flora), використаний тут як демонстраційне відео.',
+    about: 'Анімований фільм, згенерований ШІ, з власною музикою авторки, використаний тут як демонстраційне відео.',
     hint: 'Запустіть. Перемотайте. Знайдіть свою мить.',
     local: {
       prompt: 'Спробуйте зі своїм відео.',
@@ -265,7 +270,12 @@ export const COPY: Record<string, Copy> = {
       region: 'Ваше відео',
     },
     view: { group: 'Ширина плеєра', desktop: 'Десктоп', mobile: 'Мобільний' },
-    theme: { group: 'Колір плеєра', red: 'Червоний', mono: 'Моно' },
+    theme: {
+      group: 'Колір плеєра',
+      red: 'Червоний',
+      mono: 'Моно',
+      note: 'Червоний — фірмовий вигляд. Моно нейтральніший і пасує більшості сайтів: вмикається одним атрибутом data-theme="mono".',
+    },
     source: 'Джерело',
     keysTitle: 'Клавіатурні скорочення',
     keys: [
@@ -326,9 +336,9 @@ export const COPY: Record<string, Copy> = {
       labels: { focus: 'Фокус', settings: 'Налаштування', captions: 'Субтитри', restored: 'Відновлено', loading: 'Завантаження', error: 'Помилка' },
       notes: {
         focus: 'Чіткий маркер фокуса на лінійці. Контрастне кільце на кнопках.',
-        settings: 'Меню має ту саму квадратну геометрію, що й панель. Вибране позначене знаком, а не заливкою.',
+        settings: 'Меню має ту саму квадратну геометрію, що й панель. Вибране позначене знаком, а не заливкою. Пункт «Колір» перемикає весь скін між червоним і моно.',
         captions: 'Субтитри розташовані над смугою керування, а не під нею.',
-        restored: 'Збережена позиція повертається з коротким написом «Продовжено». Показано на 30-секундній копії: позиції зберігаються для відео довших за 15 секунд.',
+        restored: 'Збережена позиція повертається з коротким написом «Продовжено». Позиції зберігаються для відео довших за 15 секунд, тож 30-секундний демо-фільм це показує.',
         loading: 'Фрагмент лінійки на чорній підкладці: маркер крокує по рисках. Статус підписує стан словом, а не лише значком.',
         error: 'Значок і слово, а не самий лише колір; першою дією стоїть «Спробувати ще раз».',
       },
@@ -401,11 +411,11 @@ export const COPY: Record<string, Copy> = {
       groups: [
         ['Дизайн і код', 'Наталя Трусова · Apache 2.0'],
         ['Типографіка', 'Onest + IBM Plex Mono · OFL'],
-        ['Демо-фільм', 'Scarlet Walk · згенеровано ШІ в Kling 2.6 Pro через Flora'],
+        ['Демо-фільм', 'Freefall Bloom · фільм згенеровано ШІ, музика авторки'],
       ],
       rightsTitle: 'Демо-відео та права',
       rights: [
-        'Фільм згенеровано ШІ для цієї сторінки в Kling 2.6 Pro через Flora. Умови його повторного використання залежать від умов генератора; тут їх не підтверджено, тож перевірте їх, перш ніж використовувати фільм деінде.',
+        'Фільм згенеровано ШІ та створено авторкою для цієї сторінки, музика теж авторки. Умови його повторного використання залежать від умов генератора; тут їх не підтверджено, тож перевірте їх, перш ніж використовувати фільм деінде.',
         'Тут він лише демонструє скін. Це демонстрація, а не клієнтський проєкт.',
         'Фреймворк плеєра: Video.js v10 за його власною ліцензією.',
       ],

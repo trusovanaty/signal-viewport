@@ -1515,3 +1515,13 @@
   padding: 0 22px;
   font-size: 18px;
 }
+
+/* The full stop of a section headline is the ruler's pin: a red triangle pointing up, standing on the baseline (the same shape as the one after the product name). */
+.sc-stop {
+  display: inline-block;
+  width: 0.36em;
+  height: 0.29em;
+  margin-left: 0.08em;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}

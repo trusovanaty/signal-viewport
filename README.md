@@ -110,5 +110,5 @@ Notes: the automated checks ran in headless Chrome on Windows, with no manual se
 - Skin code: Apache License 2.0, Copyright 2026 Trusova Natalia. See [`LICENSE`](./LICENSE).
 - Fonts are not under the code license. Onest (Copyright 2021 The Onest Project Authors) and IBM Plex Mono (Copyright 2017 IBM Corp.) are under the SIL Open Font License 1.1; the texts are in `src/fonts/` and `apps/preview/public/font-licenses/`.
 - Video.js and the other dependencies keep their own licenses.
-- Demo footage: an AI-generated fashion film made for this page with Kling 2.6 Pro through Flora (`apps/preview/public/media/scarlet-walk.mp4`), with chapters, captions and a ruler storyboard written for it. Check the generator's terms before reusing it; it is shown only to demonstrate the skin. Replace it with your own video.
+- Demo footage: an AI-generated 30-second animated film with its own music, both by the author (five scenes: night, storm, sky, petals, sunset; `apps/preview/public/media/freefall-bloom.mp4`), streamed from Mux with the bundled MP4 as a fallback, with chapters, captions and a ruler storyboard written for it. Check the generator's terms before reusing it; it is shown only to demonstrate the skin. Replace it with your own video.
 - Showcase images and the clip are captures of this skin playing that demo footage.

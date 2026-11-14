@@ -13,6 +13,10 @@ export interface Copy {
   ended: string;
   error: string;
   chapters: string;
+  /** The colour option in the settings menu and its two values. */
+  colour: string;
+  colourRed: string;
+  colourMono: string;
   startOver: string;
   resetSaved: string;
   tryAgain: string;
@@ -40,6 +44,9 @@ const en: Copy = {
   ended: 'Ended',
   error: 'Error',
   chapters: 'Chapters',
+  colour: 'Colour',
+  colourRed: 'Red',
+  colourMono: 'Mono',
   startOver: 'Start over',
   resetSaved: 'Reset saved settings',
   tryAgain: 'Try again',
@@ -61,6 +68,9 @@ const uk: Copy = {
   ended: 'Завершено',
   error: 'Помилка',
   chapters: 'Розділи',
+  colour: 'Колір',
+  colourRed: 'Червоний',
+  colourMono: 'Моно',
   startOver: 'Почати спочатку',
   resetSaved: 'Скинути збережені налаштування',
   tryAgain: 'Спробувати ще раз',
