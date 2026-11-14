@@ -7,6 +7,7 @@ import './tokens.css';
 import './demo.css';
 import './showcase.css';
 import './motion.css';
+import { initReveal } from './reveal';
 import { setSignalTheme, useSignalTheme } from '@/video/shared/preferences';
 import { FormatPlayer, MATERIAL, Player, TITLE, type LocalMedia } from '../frame/player';
 import { COPY, EXAMPLE, STATES, type Copy, type StateKey } from './copy';
@@ -610,6 +611,8 @@ function Demo() {
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+  // Sections arrive once as they come into view (before the first paint, so nothing flashes); a no-op with reduced motion.
+  useLayoutEffect(() => initReveal(), []);
   // A video opened from the visitor's computer. The blob address lives only in this tab; it is released when another
   // source replaces it, when the demo is restored, and when the page closes.
   const [local, setLocal] = useState<LocalMedia | null>(null);

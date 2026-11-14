@@ -700,6 +700,18 @@
   width: 40px;
   height: 40px;
 }
+/* A narrow player has a picture only ~200 px tall: the big button is smaller there so it does not cover the face
+   (64 px is still above the 48 px touch target). */
+@container media-root (max-width: 559.98px) {
+  .signal-start {
+    width: 64px;
+    height: 64px;
+  }
+  .signal-start-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
 
 /* ---- Settings menu ---- */
 .signal-btn--menu {

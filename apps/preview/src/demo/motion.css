@@ -1,16 +1,21 @@
 /*
- * Motion of the landing page, kept light and in the language of the site: the ruler and its pin.
+ * Motion of the landing page, in the language of the author's site: slow, soft arrivals on one curve, short stagger,
+ * hairlines that draw themselves from the left. Nothing bounces, nothing loops.
  *
- * One authored moment: when the page opens, the ruler under the name draws itself from zero to the right and the red pin
- * lands on zero, while the name rises from under its baseline. It plays once and takes about a second.
- * Everything else is quiet feedback: the picture of a player state fades into the next one, and buttons answer a hover.
+ *   arrival  600 ms  cubic-bezier(0.22, 1, 0.36, 1)  (rise 16 px and fade in, 80 ms stagger)
+ *   hairline 700 ms  cubic-bezier(0.65, 0, 0.35, 1)  (scaleX from the left)
+ *   reveal   500 ms  opacity + 600 ms rise of 12 px  (once, when a section comes into view)
+ *   feedback 150 ms  colour
  *
- * The page is fully visible without any of this. With "reduce motion" there is no movement at all: the header is simply
- * there, and the pictures swap without a fade.
+ * One authored moment keeps the site's own idea: the ruler under the name draws itself and the red pin lands on zero.
+ *
+ * The page is fully visible without any of this (the scroll reveals are switched on by `reveal.ts` only when it can run).
+ * With "reduce motion" there is no movement at all: the header is simply there and the pictures swap without a fade.
  */
 
 :root {
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-arrive: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-line: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* Quiet feedback: short colour changes on the page's own controls (the player has its own). */
@@ -18,51 +23,88 @@
 .sc-btn,
 .sc-toggles button {
   transition:
-    color 140ms var(--ease-out),
-    background-color 140ms var(--ease-out),
-    border-color 140ms var(--ease-out);
+    color 150ms var(--ease-arrive),
+    background-color 150ms var(--ease-arrive),
+    border-color 150ms var(--ease-arrive);
 }
 
 /* A player state fades into the next one (the pictures are stacked in one place). */
 .sc-states .sc-shot-img {
   opacity: 0;
   transition:
-    opacity 160ms var(--ease-out),
+    opacity 160ms var(--ease-arrive),
     visibility 0s linear 160ms;
 }
 .sc-states .sc-shot-img[data-active] {
   opacity: 1;
-  transition: opacity 240ms var(--ease-out);
+  transition: opacity 240ms var(--ease-arrive);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The name rises from under its baseline, line by line. */
-  .demo-title > span {
-    animation: demo-rise 620ms var(--ease-out) both;
+  /* The header arrives in steps: label, the two lines of the name, the ruler, then the player. */
+  .demo-top,
+  .demo-title > span,
+  .demo-hero {
+    animation: hero-up 600ms var(--ease-arrive) both;
+  }
+  .demo-title > span:nth-child(1) {
+    animation-delay: 80ms;
   }
   .demo-title > span:nth-child(2) {
-    animation-delay: 90ms;
+    animation-delay: 160ms;
+  }
+  .demo-hero {
+    animation-delay: 380ms;
   }
 
-  /* The ruler draws itself from zero, then the pin lands on zero. */
+  /* The ruler draws itself from zero, then the pin lands on zero (and the one after the name with it). */
   .demo-ruler::before,
   .demo-ruler-ticks {
-    animation: demo-draw 900ms var(--ease-out) 160ms both;
+    animation: ruler-draw 700ms var(--ease-line) 240ms both;
   }
   .demo-ruler-pin {
-    animation: demo-land 460ms var(--ease-out) 760ms both;
+    animation: pin-land 600ms var(--ease-arrive) 760ms both;
   }
-  /* The pin after the name lands with it. */
   .demo-dot {
-    animation: demo-land 460ms var(--ease-out) 820ms both;
+    animation: pin-land 600ms var(--ease-arrive) 820ms both;
+  }
+
+  /* Sections arrive once as they come into view: content rises and fades in, the top line draws from the left. */
+  html.js-reveal .rv-item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 500ms ease-out calc(var(--d, 0) * 1ms),
+      transform 600ms var(--ease-arrive) calc(var(--d, 0) * 1ms);
+  }
+  html.js-reveal .is-in > .rv-item {
+    opacity: 1;
+    transform: none;
+  }
+  html.js-reveal .sc-section[data-rv] {
+    position: relative;
+    border-top-color: transparent;
+  }
+  html.js-reveal .sc-section[data-rv]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -2px;
+    height: 2px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 700ms var(--ease-line);
+  }
+  html.js-reveal .sc-section[data-rv].is-in::before {
+    transform: scaleX(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .sc-states .sc-shot-img,
-  .sc-states .sc-shot-img[data-active] {
-    transition: none;
-  }
+  .sc-states .sc-shot-img[data-active],
   .demo-lang a,
   .sc-btn,
   .sc-toggles button {
@@ -70,18 +112,18 @@
   }
 }
 
-@keyframes demo-rise {
+@keyframes hero-up {
   from {
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(0.14em);
+    opacity: 0;
+    transform: translateY(16px);
   }
   to {
-    clip-path: inset(-4% -4% -4% -4%);
+    opacity: 1;
     transform: none;
   }
 }
 
-@keyframes demo-draw {
+@keyframes ruler-draw {
   from {
     clip-path: inset(0 100% 0 0);
   }
@@ -90,7 +132,7 @@
   }
 }
 
-@keyframes demo-land {
+@keyframes pin-land {
   from {
     opacity: 0;
     transform: translateY(-14px);

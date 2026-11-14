@@ -474,3 +474,14 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 - Quiet feedback: the picture of a player state fades into the next one (160-240 ms), and the page's own controls answer a hover with a 140 ms colour change.
 - Reduce motion: no movement at all (the header is simply there, the pictures swap without a fade); the player's own motion is untouched.
 - Deliberately not done: scroll reveals on every section, parallax, looping effects.
+
+## Landing motion, in the language of the author's site (Nov 14)
+
+- Reworked to match trusovanata.com (read from its own CSS): an arrival is 600 ms on `cubic-bezier(0.22, 1, 0.36, 1)`, rising 16 px with a fade, in an 80 ms stagger (label, the two lines of the name, the player); a hairline draws from the left in 700 ms on `cubic-bezier(0.65, 0, 0.35, 1)`; content revealed on scroll rises 12 px (500 ms fade, 600 ms rise, about 90 ms between items); feedback is a 150 ms colour change. Nothing bounces and nothing loops.
+- The one authored moment stays the site's own: the ruler under the name draws itself and the red pin lands on zero.
+- Scroll reveals (`reveal.ts`, `motion.css`): each section's content arrives once as it comes into view and the section's top line draws from the left. The page is fully visible until the script has run; with reduce motion the script does nothing (no class, no hiding, no movement) and the pictures swap without a fade.
+
+## Phone: a smaller start button and tap to pause (Nov 14)
+
+- The big Start / Replay button is 64 px (icon 28 px) in a narrow player instead of 96 px (icon 40 px): on a phone the picture is only about 205 px tall and the old button covered almost a third of it, and the face after the end. It stays above the 48 px touch target; wide players keep 96 px.
+- A tap with a finger now pauses and resumes the video, anywhere on the picture (in the page and in full screen); before, a touch tap was mapped to "show or hide the controls", which did nothing because the panel is always visible. A double tap still seeks (sides) or toggles full screen (centre); a mouse click still pauses from the centre. Checked with touch emulation in Chrome: tap plays, tap at the left edge pauses, tap at the right edge resumes, a double tap on the right seeks about 10 s forward and keeps playing. Not checked: a real phone in real full screen.
