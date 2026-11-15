@@ -65,10 +65,13 @@ interface Picker {
 }
 
 function Radios({ label, picker, note }: { label: string; picker: Picker; note?: ReactNode }) {
+  // A list of four to nine short options (speeds, resolutions) is laid out as a grid on narrow players, so it fits the
+  // picture instead of scrolling inside it. Rows with a picture (chapters) stay a list.
+  const grid = picker.options.length > 3 && picker.options.length <= 9 && !picker.options.some((o) => o.leading);
   return (
     <>
       <Menu.RadioGroup
-        className="signal-menu-group"
+        className={grid ? 'signal-menu-group signal-menu-group--grid' : 'signal-menu-group'}
         value={picker.value}
         onValueChange={picker.setValue}
         aria-label={label}

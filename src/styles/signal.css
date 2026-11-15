@@ -161,15 +161,10 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
-/* Narrow players drop the chapter first, then the status; the title is only ever truncated. */
+/* Narrow players drop the chapter; the status word stays at every width (a phone viewer needs to see Playing / Paused too),
+   and it is the title that is truncated when the two do not fit. */
 @container media-root (max-width: 559.98px) {
   .signal-chapter { display: none; }
-}
-@container media-root (max-width: 359.98px) {
-  .signal-bar-meta { display: none; }
-  /* A fresh "Resumed" notice or an error is worth the room: show the status, still without the chapter. */
-  .signal-bar-meta[data-notice],
-  .signal-bar:has(.signal-status-icon) .signal-bar-meta { display: flex; }
 }
 
 /* ---- Panel: play | timeline | time | cluster (volume, settings, PiP, fullscreen) ---- */
@@ -791,6 +786,26 @@
 .signal-menu-group {
   display: flex;
   flex-direction: column;
+}
+/* Narrow players: a short list of options (speeds, resolutions) becomes a grid of three columns (four on the narrowest), so
+   all of it fits above the panel without scrolling inside the picture. Rows stay 48px: a thumb can hit every one. */
+@container media-root (max-width: 559.98px) {
+  .signal-menu-group--grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .signal-menu-group--grid .signal-menu-item {
+    gap: 6px;
+    padding-inline: 12px;
+  }
+}
+@container media-root (max-width: 339.98px) {
+  .signal-menu-group--grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .signal-menu-group--grid .signal-menu-item {
+    padding-inline: 8px;
+  }
 }
 .signal-menu-item {
   box-sizing: border-box;
