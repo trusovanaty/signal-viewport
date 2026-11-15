@@ -65,7 +65,9 @@ function Ticks({ ticks, labels, className }: { ticks: Tick[]; labels?: boolean; 
       {ticks.map((tick) => (
         <span
           key={tick.key}
-          className={`signal-tick ${tick.major ? 'signal-tick--major' : 'signal-tick--minor'}${tick.end ? ' signal-tick--end' : ''}`}
+          className={`signal-tick ${tick.major ? 'signal-tick--major' : 'signal-tick--minor'}${tick.end ? ' signal-tick--end' : ''}${
+            tick.percent <= 0 ? ' signal-tick--at-start' : tick.percent >= 99.999 ? ' signal-tick--at-end' : ''
+          }`}
           style={{ left: `${tick.percent}%` }}
         >
           {labels && tick.label ? <span className="signal-tick-label">{tick.label}</span> : null}

@@ -36,6 +36,7 @@ const STATE_IMAGE: Record<StateKey, string> = {
   focus: 'g-focus',
   settings: 'g-settings',
   captions: 'g-captions',
+  chapters: 'g-chapters',
   restored: 'g-restored',
   loading: 'g-loading',
   error: 'g-error',

@@ -1,5 +1,5 @@
 // All page copy, English and Ukrainian. The skin's own strings live in src/video/i18n.ts; these are the showcase's.
-export const STATES = ['focus', 'settings', 'captions', 'restored', 'loading', 'error'] as const;
+export const STATES = ['focus', 'settings', 'captions', 'chapters', 'restored', 'loading', 'error'] as const;
 export type StateKey = (typeof STATES)[number];
 
 export interface Copy {
@@ -160,14 +160,15 @@ export const COPY: Record<string, Copy> = {
     },
     states: {
       title: 'Player states.',
-      text: 'Focus, menu, captions, resume, loading and error: not only the calm first frame.',
+      text: 'Focus, menu, captions, chapters, resume, loading and error: not only the calm first frame.',
       group: 'Player states',
       hint: 'Pick a state to see it on the player.',
-      labels: { focus: 'Focus', settings: 'Settings', captions: 'Captions', restored: 'Restored', loading: 'Loading', error: 'Error' },
+      labels: { focus: 'Focus', settings: 'Settings', captions: 'Captions', chapters: 'Chapters', restored: 'Restored', loading: 'Loading', error: 'Error' },
       notes: {
         focus: 'A clear focus marker on the ruler. A contrasting ring on buttons.',
         settings: 'Speed, Quality, Captions, Chapters and Colour in one menu, with the panel’s square geometry. The selected item is marked with a sign, not a fill. Colour switches the whole skin between Red and Mono.',
         captions: 'Captions sit above the control strip, never under it.',
+        chapters: 'Chapters in the menu, each with its time and a frame of the film. Choosing one jumps there.',
         restored: 'A saved position returns with a short “Resumed” note. Positions are saved for videos longer than 15 seconds, so the 30-second demo film shows it.',
         loading: 'A piece of the ruler on a black plate: the pin steps along the ticks. The status says Buffering, not just an icon.',
         error: 'An icon and words, never color alone, with Try again as the first action.',
@@ -176,6 +177,7 @@ export const COPY: Record<string, Copy> = {
         focus: 'The seek ruler with the keyboard focus frame around the pin.',
         settings: 'The settings menu open above the control strip.',
         captions: 'Captions shown on the picture above the control strip.',
+        chapters: 'The chapters list in the settings menu: each chapter with its time and a frame.',
         restored: 'The title strip reading Resumed 0:15 after a saved position was restored.',
         loading: 'A small ruler with a pin over a black picture while the video buffers.',
         error: 'The error message with Try again and OK buttons.',
@@ -330,14 +332,15 @@ export const COPY: Record<string, Copy> = {
     },
     states: {
       title: 'Стани плеєра.',
-      text: 'Фокус, меню, субтитри, відновлення, завантаження й помилка: не лише спокійний перший кадр.',
+      text: 'Фокус, меню, субтитри, розділи, відновлення, завантаження й помилка: не лише спокійний перший кадр.',
       group: 'Стани плеєра',
       hint: 'Оберіть стан, щоб побачити його на плеєрі.',
-      labels: { focus: 'Фокус', settings: 'Налаштування', captions: 'Субтитри', restored: 'Відновлено', loading: 'Завантаження', error: 'Помилка' },
+      labels: { focus: 'Фокус', settings: 'Налаштування', captions: 'Субтитри', chapters: 'Розділи', restored: 'Відновлено', loading: 'Завантаження', error: 'Помилка' },
       notes: {
         focus: 'Чіткий маркер фокуса на лінійці. Контрастне кільце на кнопках.',
         settings: 'Швидкість, якість, субтитри, розділи й колір в одному меню з квадратною геометрією панелі. Вибране позначене знаком, а не заливкою. «Колір» перемикає весь скін між червоним і моно.',
         captions: 'Субтитри розташовані над смугою керування, а не під нею.',
+        chapters: 'Розділи в меню, кожен із часом і кадром фільму. Вибір переносить до потрібного моменту.',
         restored: 'Збережена позиція повертається з коротким написом «Продовжено». Позиції зберігаються для відео довших за 15 секунд, тож 30-секундний демо-фільм це показує.',
         loading: 'Фрагмент лінійки на чорній підкладці: маркер крокує по рисках. Статус підписує стан словом, а не лише значком.',
         error: 'Значок і слово, а не самий лише колір; першою дією стоїть «Спробувати ще раз».',
@@ -346,6 +349,7 @@ export const COPY: Record<string, Copy> = {
         focus: 'Лінійка перемотки з рамкою клавіатурного фокуса навколо вказівника.',
         settings: 'Меню налаштувань, відкрите над смугою керування.',
         captions: 'Субтитри на зображенні над смугою керування.',
+        chapters: 'Список розділів у меню налаштувань: кожен розділ із часом і кадром.',
         restored: 'Смуга назви з написом Resumed 0:15 після відновлення збереженої позиції.',
         loading: 'Маленька лінійка з маркером на чорному зображенні під час буферизації відео.',
         error: 'Повідомлення про помилку з кнопками Try again і OK.',

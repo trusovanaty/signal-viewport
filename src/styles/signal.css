@@ -423,7 +423,7 @@
   inset: 0;
   pointer-events: none;
 }
-.-ticks--base {
+.signal-ticks--base {
   color: var(--signal-dim);
 }
 /*
@@ -439,7 +439,10 @@
 }
 .signal-ticks--played {
   color: var(--signal-mark);
-  clip-path: inset(0 calc(100% - var(--signal-pos)) 0 0);
+  /* The window is 2px wider than the played part on both sides: a tick is 2px wide, so at the very start and end (and
+     whenever a tick is reached) it is drawn whole in the played colour, never half of it, and the dark layer under it
+     cannot show through the edge. */
+  clip-path: inset(0 calc(100% - var(--signal-pos) - 2px) 0 -2px);
 }
 /* Gliding is only for playback and keyboard seeks; while dragging the parts follow the pointer immediately. */
 .signal-ruler:not([data-dragging]) .signal-ticks--played {
@@ -462,6 +465,12 @@
 }
 .signal-tick--minor { height: 7px; }
 .signal-tick--major { height: 15px; width: 2px; margin-left: -1px; }
+/* A tick at 0% or 100% sits exactly on the end of the ruler. Centred on their position they would hang 1px outside
+   it: the white (played) layer is clipped at the edge and the black layer is not, so the black showed from under the
+   white one, and the first tick did not meet the line of the rail. */
+.signal-tick--at-start { margin-left: 0; }
+.signal-tick--major.signal-tick--at-end { margin-left: -2px; }
+.signal-tick--minor.signal-tick--at-end { margin-left: -1px; }
 
 .signal-tick-label {
   position: absolute;

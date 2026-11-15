@@ -490,3 +490,14 @@ The title is one line ("Player states." / «Стани плеєра.») so the s
 
 - Mono, Any format: each of the three frames gets the same quiet backing as the main player (an 8 px spread shadow in `--surface-quiet`, drawn outside the box so nothing moves), because the white panel melted into the white page.
 - The line that draws itself on scroll now exists only on sections that already have a line on top (`data-rv-line`); the dark bands ("Time control", "Player states") have none, so the stray stripe above them is gone.
+
+## Chapters state; ruler ends (Nov 15)
+
+- Player states now has a seventh state, Chapters (after Captions): the settings menu on its chapters list, each chapter with its time and a frame of the film, the current one marked. EN and UK pictures (`g-chapters`, `g-chapters-uk`).
+- Ruler ends fixed: the first tick (at 0%) and the last (at 100%) sit exactly on the ends of the rail instead of hanging 1px outside it, and the played (white or black) layer is 2px wider than the played part so a tick is always drawn whole in its colour; the dark layer no longer shows from under the white one at the start or end. A broken selector (`.-ticks--base`) was repaired, so the base ticks and labels take the dim colour in the mono theme again (grey).
+
+## Quality: a hand-picked resolution applies at once (Nov 15)
+
+- Cause of "I chose 1080p and nothing changed": the engine's own switch is gradual (it waits for pieces it has not loaded yet), and the 30-second demo is fully buffered at its starting resolution (720p) within seconds, so a later choice never replaced the picture. The settings menu now also asks the engine to switch to the chosen level immediately (`currentLevel = nextLevel`, a few tries because the engine learns the level a moment after the click), which replaces the buffered part. Auto is left to the engine. Checked in Chrome (headless, Mux stream): from 720p the picture reaches 1920x1080 in about 3 to 7 seconds after the choice and keeps playing; before the change it did not switch for the buffered part at all.
+- The part already played is dropped too (it stays in the old resolution otherwise), and the chosen level is read from the engine's `manualLevel`, which is also set after the film has ended (`nextLevel` is -1 then). Checked in Chrome on the local build: 5 of 5 runs reached 1080p in 4 to 5 seconds while playing; after the end, a replay starts in 1080p at once.
+- The 1080p rendition itself comes from a 1280x720 film upscaled to 1080p, so the gain over 720p is in pixels, not in new detail.

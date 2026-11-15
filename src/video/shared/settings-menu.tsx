@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 
-import { Menu, Thumbnail, useCaptionsOptions, usePlaybackRateOptions, useQualityOptions } from '@videojs/react';
+import { Menu, Thumbnail, useCaptionsOptions, useMedia, usePlaybackRateOptions, useQualityOptions } from '@videojs/react';
 import { usePlayer } from '@videojs/react/video';
 import { type ReactNode, useContext, useEffect, useRef } from 'react';
 
@@ -118,6 +118,15 @@ function Section({ title, picker, note }: { title: string; picker: Picker; note?
   );
 }
 
+/** The part of the HLS engine (hls.js) the skin touches: the level it will switch to next and the one it is playing. */
+interface HlsEngine {
+  nextLevel: number;
+  currentLevel: number;
+  /** The level the viewer chose by hand (-1 while the engine picks by itself). Unlike `nextLevel` it is also set after the film ended. */
+  manualLevel: number;
+  trigger?: (event: string, data: unknown) => boolean;
+}
+
 /**
  * One settings menu. Sections (Speed, Quality, Captions) appear only when the source and browser really offer them. With
  * a single section the options are listed directly; with several, each section is a submenu.
@@ -125,6 +134,7 @@ function Section({ title, picker, note }: { title: string; picker: Picker; note?
 export function SettingsMenu() {
   const rate = usePlaybackRateOptions();
   const quality = useQualityOptions();
+  const media = useMedia() as (HTMLMediaElement & { engine?: HlsEngine | null }) | null;
   const captions = useCaptionsOptions();
   const activeHeight = usePlayer((s) => s.activeVideoRendition?.height);
   const store = usePlayer();
@@ -195,6 +205,28 @@ export function SettingsMenu() {
   const qualityPicker: Picker | null = hasQuality
     ? {
         ...quality,
+        // A resolution the viewer picks by hand applies at once. The streaming engine's own switch is gradual (it waits
+        // for pieces it has not loaded yet), and a short film is usually already loaded in the resolution it started
+        // with, so the picture would not change at all. Switching to the chosen level now replaces what is buffered.
+        setValue: (value: string) => {
+          quality.setValue(value);
+          if (value === 'auto') return;
+          // The engine learns the chosen level a moment after the click, so ask a few times until it has it.
+          let tries = 0;
+          const apply = () => {
+            const engine = media?.engine;
+            if (engine && engine.manualLevel >= 0) {
+              if (engine.currentLevel !== engine.manualLevel) engine.currentLevel = engine.manualLevel;
+              // The part already played stays in the old resolution too, and a replay (or a seek back) would show it. Drop it,
+              // so it is loaded again in the chosen one. The second just played is kept, so the picture does not stall.
+              const played = Math.max(0, (media?.currentTime ?? 0) - 1);
+              if (played > 0) engine.trigger?.('hlsBufferFlushing', { startOffset: 0, endOffset: played, type: null });
+              return;
+            }
+            if (++tries < 8) window.setTimeout(apply, 120);
+          };
+          window.setTimeout(apply, 60);
+        },
         selectedLabel: modeOnly(quality.selectedLabel),
         options: quality.options.map((o) => (o.value === 'auto' ? { ...o, label: modeOnly(o.label) } : o)),
       }
