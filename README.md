@@ -24,14 +24,15 @@ The port is Vite's default and may differ; the terminal prints the real address.
 - Title strip with the video title, the chapter and a short state word (Ready, Playing, Paused, Buffering, Ended, Error). An error is marked by an icon as well as the word.
 - Poster with a Start button, then Replay at the end.
 - On the showcase page, "Open your video" plays a file from your own computer in the same player. The file is opened in this browser only (a blob address from `URL.createObjectURL`), it is never uploaded, its name is shown as plain text, nothing about it is stored (saved position is off for local files), and "Restore demo" brings the demo back. The file type is only a first hint; if the browser cannot play the file, the page says so. Which formats play depends on your browser; none is promised.
-- Click the elapsed time to open "Go to time": type `m:ss` or `h:mm:ss`, Enter to jump, Escape to close. It uses the player's own seek, keeps play or pause, and explains a time outside the video.
+- Click the elapsed time to open "Go to time": type the digits and the colons put themselves in (`126` reads `1:26`, `12345` reads `1:23:45`), Enter to jump, Escape to close. It uses the player's own seek, keeps play or pause, and explains a time outside the video.
 - Ruler as the time slider: ticks and labels sized to the width, frame previews on hover and drag when the source has a storyboard, chapters from a WebVTT chapters track.
-- Settings menu with Speed, Quality, Captions and Chapters. A section appears only when the source and the browser really offer it. Picture-in-Picture appears only where it is supported.
-- Saved per viewer (localStorage, guarded): speed, mute and caption language, and the position of each video. A short "Resumed" note is shown after a saved position is restored. "Start over" and "Reset saved settings" are in the menu.
+- Settings menu with Speed, Quality, Captions, Chapters and an optional Colour switch (Red or Mono; turned on with the `themeSwitch` prop). A section appears only when the source and the browser really offer it. A resolution picked by hand applies at once, replacing what is already buffered. Picture-in-Picture appears only where it is supported.
+- Saved per viewer (localStorage, guarded): speed, mute, caption language and colour, and the position of each video. A short "Resumed" note is shown after a saved position is restored. "Start over" and "Reset saved settings" are in the menu.
 - Error dialog with a friendly message, a labeled technical detail, and one manual "Try again".
 - Keyboard: Space/K play, M mute, arrows or J/L seek, Up/Down volume, 0-9 jump, `<` `>` speed, C captions, I picture-in-picture, F fullscreen. Visible focus everywhere. A live region announces state changes.
 - Two languages for the skin's own strings: English and Ukrainian (the rest comes from Video.js's translations).
-- Narrow players get their own composition: the panel becomes two rows, the settings button loses its value, the menu opens as a sheet inside the player.
+- A tap on the picture pauses and resumes; a double tap seeks (left and right) or toggles full screen (centre).
+- Narrow players get their own composition: the panel becomes two rows, the settings button loses its value, the menu opens as a sheet inside the player, with speeds and resolutions as a grid so they fit without scrolling.
 - Reduced motion and forced-colors styles are included.
 
 ## Use it in a project
@@ -83,7 +84,7 @@ The media shown in this repository is configured in `apps/preview/src/frame/play
 
 ## Testing & compatibility
 
-Tested in Chrome on Windows. Other browsers, physical mobile devices and assistive technologies have not yet been tested. Interface languages: English and Ukrainian.
+Checked in Chrome on Windows (automated), by hand in Firefox and on an Android phone by the author, and on an iPhone in Safari by a tester (the fixes after that feedback were checked in Chrome only). Assistive technologies have not been tested. Interface languages: English and Ukrainian.
 
 Checked (automated, headless Chrome on Windows):
 - Window widths 320, 375, 720, 768 and 1440 px, with no horizontal scroll and no overlapping controls. The 720 px window checks the narrow layout; it is not browser zoom.
@@ -95,15 +96,15 @@ Checked (automated, headless Chrome on Windows):
 - `npm run typecheck` and `npm run build`.
 
 Not tested:
-- Safari and Firefox.
-- A physical mobile phone (touch was only emulated).
+- Safari on a Mac, and a recheck on an iPhone after the latest fixes.
+- Other phones than the ones above (the automated touch checks are an emulation).
 - A real screen reader (NVDA, JAWS, VoiceOver, TalkBack).
 - The reduced-motion setting on a real system.
 - Browser zoom at 200%. The 720 px window and the checks at different device pixel ratios are not the same as browser zoom at 200%.
 - Displays with fractional scaling (125%, 150%): the major ticks of the ruler can come out 2 or 3 device pixels wide.
 - Very large video files, video formats the browser cannot decode (the player reports an error), a real hours-long stream, and right-to-left layout.
 
-Notes: the automated checks ran in headless Chrome on Windows, with no manual session on a physical device. Passing an automated check does not mean the page has no accessibility problems.
+Notes: the automated checks ran in headless Chrome on Windows; Firefox and the phones were tried by hand. Passing an automated check does not mean the page has no accessibility problems.
 
 ## Licenses
 

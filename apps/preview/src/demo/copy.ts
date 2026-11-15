@@ -138,7 +138,7 @@ export const COPY: Record<string, Copy> = {
       pause: 'Pause recording',
       alt: 'Recording of the pointer moving along the ruler, with a frame preview and the time following it.',
       gotoAlt: 'The control panel with the time field open and 0:07 typed in it.',
-      goto: 'Click the time, type m:ss and press Enter: the player goes to that exact moment.',
+      goto: 'Click the time, type the digits and press Enter: the colons put themselves in (126 reads 1:26) and the player goes to that exact moment.',
       feature: { label: 'Feature', heading: 'Type the time' },
       items: [
         ['Read', 'See your position.'],
@@ -196,10 +196,10 @@ export const COPY: Record<string, Copy> = {
       title: 'Preferences.',
       text: 'The player remembers you, speaks your language and adapts to how you use it.',
       items: [
-        ['Memory', 'Remembers speed, sound, caption language and the position of each video. One command resets it all.'],
+        ['Memory', 'Remembers speed, sound, caption language, colour and the position of each video. One command resets it all.'],
         ['Languages', 'The skin speaks English and Ukrainian; the rest follows the Video.js translations.'],
         ['Accessibility', 'Styles for reduced motion and high contrast, and state changes announced to screen readers.'],
-        ['Touch', 'Double-tap the left or right side to seek, the centre to go fullscreen.'],
+        ['Touch', 'Tap the picture to pause or play; double-tap the left or right side to seek, the centre to go fullscreen.'],
       ],
     },
     keyboard: {
@@ -225,19 +225,19 @@ export const COPY: Record<string, Copy> = {
       workbench: 'Open workbench',
       exampleTitle: 'Integration example',
       testingTitle: 'Testing & compatibility',
-      testingText: 'Tested in Chrome on Windows. Safari and assistive technologies have not yet been tested.',
+      testingText: 'Checked in Chrome on Windows, by hand in Firefox and on an Android phone, and on an iPhone in Safari by a tester (the fixes after that feedback were checked in Chrome only). Assistive technologies have not been tested.',
       languagesLine: 'Interface languages: English / Ukrainian.',
       detailsTitle: 'Testing details',
       checkedTitle: 'Checked',
       checked: [],
       notTestedTitle: 'Not tested',
       notTested: [
-        'Safari.',
+        'Safari on a Mac, and the iPhone fixes after the latest feedback.',
         'A real screen reader (NVDA, JAWS, VoiceOver, TalkBack).',
         'Browser zoom at 200%, and displays with fractional scaling (125%, 150%).',
       ],
       notesTitle: 'How',
-      notes: ['The checks are automatic, in headless Chrome on Windows, with no manual session on a device.'],
+      notes: ['Automatic checks run in headless Chrome on Windows; Firefox and the phones were tried by hand.'],
     },
     footer: {
       groups: [
@@ -310,7 +310,7 @@ export const COPY: Record<string, Copy> = {
       pause: 'Пауза',
       alt: 'Запис руху вказівника вздовж лінійки: з’являється кадр попереднього перегляду і час.',
       gotoAlt: 'Панель керування з відкритим полем часу, у ньому введено 0:07.',
-      goto: 'Клацніть час, введіть х:сс і натисніть Enter: плеєр перейде саме до цієї миті.',
+      goto: 'Клацніть час, введіть цифри й натисніть Enter: двокрапки з’являться самі (126 стане 1:26), і плеєр перейде саме до цієї миті.',
       feature: { label: 'Особливість', heading: 'Введіть час' },
       items: [
         ['Читання', 'Бачите свою позицію.'],
@@ -368,10 +368,10 @@ export const COPY: Record<string, Copy> = {
       title: 'Уподобання.',
       text: 'Плеєр пам’ятає вас, говорить вашою мовою і підлаштовується під те, як ви ним користуєтесь.',
       items: [
-        ['Пам’ять', 'Запам’ятовує швидкість, звук, мову субтитрів і позицію кожного відео. Одна команда скидає все.'],
+        ['Пам’ять', 'Запам’ятовує швидкість, звук, мову субтитрів, колір і позицію кожного відео. Одна команда скидає все.'],
         ['Мови', 'Скін говорить англійською та українською; решта йде з перекладів Video.js.'],
         ['Доступність', 'Стилі для зменшення руху та високого контрасту, а зміни стану озвучуються для скрінрідерів.'],
-        ['Дотик', 'Двічі торкніться лівого або правого боку, щоб перемотати, центру, щоб увімкнути повний екран.'],
+        ['Дотик', 'Торкніться зображення, щоб поставити на паузу чи відновити; двічі торкніться лівого або правого боку, щоб перемотати, центру, щоб увімкнути повний екран.'],
       ],
     },
     keyboard: {
@@ -397,19 +397,19 @@ export const COPY: Record<string, Copy> = {
       workbench: 'Відкрити робочий стенд',
       exampleTitle: 'Приклад підключення',
       testingTitle: 'Перевірка та сумісність',
-      testingText: 'Перевірено в Chrome на Windows. Safari та допоміжні технології поки не перевірено.',
+      testingText: 'Перевірено в Chrome на Windows, вручну у Firefox і на телефоні Android, а також тестувальником на iPhone у Safari (виправлення після його відгуку перевірено лише в Chrome). Допоміжні технології не перевірено.',
       languagesLine: 'Мови інтерфейсу: English / Українська.',
       detailsTitle: 'Деталі перевірки',
       checkedTitle: 'Перевірено',
       checked: [],
       notTestedTitle: 'Не перевірено',
       notTested: [
-        'Safari.',
+        'Safari на Mac і виправлення для iPhone після останнього відгуку.',
         'Справжній скрінрідер (NVDA, JAWS, VoiceOver, TalkBack).',
         'Масштаб браузера 200% та екрани з дробовим масштабом (125%, 150%).',
       ],
       notesTitle: 'Як',
-      notes: ['Перевірки автоматичні, у headless Chrome на Windows, без ручної сесії на пристрої.'],
+      notes: ['Автоматичні перевірки йдуть у headless Chrome на Windows; Firefox і телефони пробували вручну.'],
     },
     footer: {
       groups: [
