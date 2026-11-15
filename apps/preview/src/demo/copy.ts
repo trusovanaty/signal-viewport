@@ -237,7 +237,10 @@ export const COPY: Record<string, Copy> = {
         'Browser zoom at 200%, and displays with fractional scaling (125%, 150%).',
       ],
       notesTitle: 'How',
-      notes: ['Automatic checks run in headless Chrome on Windows; Firefox and the phones were tried by hand.'],
+      notes: [
+        'Automatic checks run in headless Chrome on Windows; Firefox and the phones were tried by hand.',
+        'On an iPhone in Safari, full screen opens Apple’s own video player: the browser does not let a page put its own controls there, as with any web player. On desktop browsers and on Android the skin’s panel stays in full screen.',
+      ],
     },
     footer: {
       groups: [
@@ -409,7 +412,10 @@ export const COPY: Record<string, Copy> = {
         'Масштаб браузера 200% та екрани з дробовим масштабом (125%, 150%).',
       ],
       notesTitle: 'Як',
-      notes: ['Автоматичні перевірки йдуть у headless Chrome на Windows; Firefox і телефони пробували вручну.'],
+      notes: [
+        'Автоматичні перевірки йдуть у headless Chrome на Windows; Firefox і телефони пробували вручну.',
+        'На iPhone у Safari повний екран відкриває власний відеоплеєр Apple: браузер не дозволяє сторінці розмістити там свої елементи керування, як і в будь-якому вебплеєрі. У браузерах на комп’ютері та на Android панель скіна лишається й на повному екрані.',
+      ],
     },
     footer: {
       groups: [

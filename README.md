@@ -104,7 +104,7 @@ Not tested:
 - Displays with fractional scaling (125%, 150%): the major ticks of the ruler can come out 2 or 3 device pixels wide.
 - Very large video files, video formats the browser cannot decode (the player reports an error), a real hours-long stream, and right-to-left layout.
 
-Notes: the automated checks ran in headless Chrome on Windows; Firefox and the phones were tried by hand. Passing an automated check does not mean the page has no accessibility problems.
+Notes: the automated checks ran in headless Chrome on Windows; Firefox and the phones were tried by hand. On an iPhone in Safari, full screen opens Apple's own video player: the browser does not let a page put its own controls there, as with any web player. On desktop browsers and on Android the skin's panel stays in full screen. Passing an automated check does not mean the page has no accessibility problems.
 
 ## Licenses
 
