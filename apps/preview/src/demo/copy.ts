@@ -166,7 +166,7 @@ export const COPY: Record<string, Copy> = {
       labels: { focus: 'Focus', settings: 'Settings', captions: 'Captions', chapters: 'Chapters', restored: 'Restored', loading: 'Loading', error: 'Error' },
       notes: {
         focus: 'A clear focus marker on the ruler. A contrasting ring on buttons.',
-        settings: 'Speed, Quality, Captions, Chapters and Colour in one menu, with the panel’s square geometry. The selected item is marked with a sign, not a fill. Colour switches the whole skin between Red and Mono.',
+        settings: 'Speed, Quality, Captions, Chapters and Colour in one menu, with the panel’s square geometry. The selected item is marked with a sign, not a fill. Colour switches the whole skin between Red and Mono. Each section appears only when the video offers it: a plain file shows just Speed and Colour.',
         captions: 'Captions sit above the control strip, never under it.',
         chapters: 'Chapters in the menu, each with its time and a frame of the film. Choosing one jumps there.',
         restored: 'A saved position returns with a short “Resumed” note. Positions are saved for videos longer than 15 seconds, so the 30-second demo film shows it.',
@@ -338,7 +338,7 @@ export const COPY: Record<string, Copy> = {
       labels: { focus: 'Фокус', settings: 'Налаштування', captions: 'Субтитри', chapters: 'Розділи', restored: 'Відновлено', loading: 'Завантаження', error: 'Помилка' },
       notes: {
         focus: 'Чіткий маркер фокуса на лінійці. Контрастне кільце на кнопках.',
-        settings: 'Швидкість, якість, субтитри, розділи й колір в одному меню з квадратною геометрією панелі. Вибране позначене знаком, а не заливкою. «Колір» перемикає весь скін між червоним і моно.',
+        settings: 'Швидкість, якість, субтитри, розділи й колір в одному меню з квадратною геометрією панелі. Вибране позначене знаком, а не заливкою. «Колір» перемикає весь скін між червоним і моно. Кожен розділ з’являється, лише якщо відео його підтримує: у звичайного файлу лише швидкість і колір.',
         captions: 'Субтитри розташовані над смугою керування, а не під нею.',
         chapters: 'Розділи в меню, кожен із часом і кадром фільму. Вибір переносить до потрібного моменту.',
         restored: 'Збережена позиція повертається з коротким написом «Продовжено». Позиції зберігаються для відео довших за 15 секунд, тож 30-секундний демо-фільм це показує.',
