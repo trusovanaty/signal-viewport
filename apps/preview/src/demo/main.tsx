@@ -100,6 +100,7 @@ function Intro({ copy }: { copy: Copy }) {
         <Lines text={copy.tagline} />
       </p>
       <p className="demo-lead">{copy.lead}</p>
+      <p className="demo-lead demo-audience">{copy.audience}</p>
     </div>
   );
 }
@@ -542,7 +543,24 @@ function Preferences({ copy }: { copy: Copy['prefs'] }) {
 }
 
 /** The skin's own icons, in the order of the names in the copy. */
-const KIT_ICONS = [PlayIcon, PauseIcon, ReplayIcon, VolumeIcon, MutedIcon, SettingsIcon, PipIcon, AlertIcon, FullscreenEnterIcon, FullscreenExitIcon];
+/** The loading mark is the same drawing the skin shows while buffering (video-feedback.tsx): a piece of the ruler and the stepping pin. */
+function LoadingMark() {
+  return (
+    <svg className="signal-loading sc-loading" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <rect x="14" y="38" width="38" height="2" />
+      <rect x="14" y="26" width="2" height="12" />
+      <rect x="50" y="26" width="2" height="12" />
+      {[20, 26, 32, 38, 44].map((x) => (
+        <rect key={x} x={x} y="32" width="2" height="6" />
+      ))}
+      <g className="signal-loading-pin">
+        <path d="M9 21h12l-5 7v11h-2V28z" />
+      </g>
+    </svg>
+  );
+}
+
+const KIT_ICONS = [PlayIcon, PauseIcon, ReplayIcon, VolumeIcon, MutedIcon, SettingsIcon, PipIcon, AlertIcon, FullscreenEnterIcon, FullscreenExitIcon, LoadingMark];
 
 /** Colour, type, icons and shape: four short cells on the same two columns as the other lists. */
 function DesignKit({ copy }: { copy: Copy['kit'] }) {

@@ -6,6 +6,8 @@ export interface Copy {
   kicker: string;
   tagline: string;
   lead: string;
+  /** Who the skin is for: one line under the lead. */
+  audience: string;
   demoTag: string;
   about: string;
   hint: string;
@@ -101,6 +103,7 @@ export const COPY: Record<string, Copy> = {
     kicker: 'Video.js v10 skin',
     tagline: 'Every frame.\nWithin reach.',
     lead: 'A Video.js v10 skin with a clear picture and a timeline made to be read.',
+    audience: 'For viewers who care about timing: find a moment on the ruler, or type the time and jump there.',
     demoTag: 'Demo footage',
     about: 'AI-generated film and music, by the author.',
     hint: 'Play. Scrub. Find your moment.',
@@ -233,7 +236,7 @@ export const COPY: Record<string, Copy> = {
       typeNote: 'Onest for words, IBM Plex Mono for time and measurements. Both are open licence.',
       icons: 'Icons',
       iconsNote: 'One icon family, drawn from the ruler’s own parts: a 24 px grid, solid shapes, sharp corners.',
-      iconNames: ['Play', 'Pause', 'Replay', 'Volume', 'Muted', 'Settings', 'Picture in picture', 'Error', 'Full screen', 'Exit full screen'],
+      iconNames: ['Play', 'Pause', 'Replay', 'Volume', 'Muted', 'Settings', 'Picture in picture', 'Error', 'Full screen', 'Exit full screen', 'Loading'],
       shape: 'Shape',
       shapeNote: 'Sharp corners everywhere. Buttons are 48 px, the ruler is 56 px high and the pin has a 3 px stem.',
     },
@@ -296,6 +299,7 @@ export const COPY: Record<string, Copy> = {
     kicker: 'Скін для Video.js v10',
     tagline: 'Кожен кадр.\nПід контролем.',
     lead: 'Скін для Video.js v10 із чистим кадром і шкалою часу, яку легко читати.',
+    audience: 'Для тих, кому важливий час у відео: знайдіть момент на лінійці або введіть час і одразу перейдіть до нього.',
     demoTag: 'Демо-відео',
     about: 'Фільм згенеровано ШІ, музика авторки.',
     hint: 'Запустіть. Перемотайте. Знайдіть свою мить.',
@@ -428,7 +432,7 @@ export const COPY: Record<string, Copy> = {
       typeNote: 'Onest для слів, IBM Plex Mono для часу й вимірювань. Обидва мають відкриту ліцензію.',
       icons: 'Іконки',
       iconsNote: 'Одна родина іконок, намальована з деталей лінійки: сітка 24 px, суцільні форми, гострі кути.',
-      iconNames: ['Відтворення', 'Пауза', 'Повтор', 'Звук', 'Без звуку', 'Налаштування', 'Картинка в картинці', 'Помилка', 'Повний екран', 'Вийти з повного екрана'],
+      iconNames: ['Відтворення', 'Пауза', 'Повтор', 'Звук', 'Без звуку', 'Налаштування', 'Картинка в картинці', 'Помилка', 'Повний екран', 'Вийти з повного екрана', 'Завантаження'],
       shape: 'Форма',
       shapeNote: 'Гострі кути скрізь. Кнопки 48 px, лінійка 56 px заввишки, стрижень відмітки 3 px.',
     },

@@ -1585,9 +1585,9 @@
   font-weight: 500;
 }
 .sc-icons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-3);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-4) 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1597,8 +1597,7 @@
   justify-items: start;
   align-content: start;
   gap: 8px;
-  width: 96px;
-  overflow-wrap: anywhere;
+  min-width: 0;
   font-family: var(--demo-mono);
   font-size: var(--fs-label);
   line-height: 1.25;
@@ -1622,6 +1621,9 @@
   .sc-swatches {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+  .sc-icons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* A grid item cannot shrink below its content by default, so a long code line stretched the whole page on a phone. The
@@ -1635,4 +1637,9 @@
     font-size: 12px;
     line-height: 18px;
   }
+}
+.sc-plate .sc-loading {
+  fill: #fff;
+  width: 56px;
+  height: 56px;
 }
