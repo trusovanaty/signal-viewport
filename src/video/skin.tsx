@@ -6,7 +6,7 @@ import '../styles/video/scaffold.css';
 import '../styles/fonts.css';
 import '../styles/signal.css';
 import { Container as ContainerPrimitive, Poster as PosterPrimitive, Slider as SliderPrimitive } from '@videojs/react';
-import type { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 
 import { cn } from '@/lib/resolve-class-name';
 
@@ -54,10 +54,41 @@ function focusPlayerOnPointer(event: ReactMouseEvent<HTMLElement>) {
   }, 120);
 }
 
-export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, onClick, ...props }: VideoSkinProps = {}) {
+/**
+ * The shortcuts are letters (M, K, J, L, C, I, F) and the two speed keys (< and >). The library matches the typed
+ * character, so on a Ukrainian or Russian layout (M is "ь", K is "л") none of them would work, while Space and the arrows
+ * would. The physical key is the same on every layout, so a key that is not an ASCII character is repeated with the Latin
+ * letter of the same physical key, and the library handles it as usual.
+ */
+function latinKeyFor(event: ReactKeyboardEvent<HTMLElement>): string | null {
+  if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1 || event.key.charCodeAt(0) < 128) return null;
+  const letter = /^Key([A-Z])$/.exec(event.code);
+  if (letter) return event.shiftKey ? letter[1]! : letter[1]!.toLowerCase();
+  if (event.shiftKey && event.code === 'Comma') return '<';
+  if (event.shiftKey && event.code === 'Period') return '>';
+  return null;
+}
+
+function repeatWithLatinKey(event: ReactKeyboardEvent<HTMLElement>) {
+  const target = event.target as HTMLElement;
+  if (target.closest('input, textarea, [contenteditable="true"]')) return;
+  const key = latinKeyFor(event);
+  if (!key) return;
+  event.preventDefault();
+  event.stopPropagation();
+  target.dispatchEvent(
+    new KeyboardEvent('keydown', { key, code: event.code, shiftKey: event.shiftKey, repeat: event.repeat, bubbles: true, cancelable: true })
+  );
+}
+
+export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, onClick, onKeyDownCapture, ...props }: VideoSkinProps = {}) {
   const theme = useSignalTheme();
   return (
     <ContainerPrimitive
+      onKeyDownCapture={(event: ReactKeyboardEvent<HTMLElement>) => {
+        repeatWithLatinKey(event);
+        (onKeyDownCapture as ((e: ReactKeyboardEvent<HTMLElement>) => void) | undefined)?.(event);
+      }}
       onClick={(event: ReactMouseEvent<HTMLElement>) => {
         focusPlayerOnPointer(event);
         (onClick as ((e: ReactMouseEvent<HTMLElement>) => void) | undefined)?.(event);
