@@ -440,6 +440,7 @@
 }
 .sc-code {
   box-sizing: border-box;
+  max-width: 100%;
   margin: 0 0 20px;
   padding: 14px 18px;
   max-height: 420px;
@@ -1521,4 +1522,117 @@
    closer to each other than the main player does to its neighbours. */
 .sc-format .signal-skin[data-signal-theme='mono'] {
   box-shadow: 0 0 0 var(--space-2) var(--surface-quiet);
+}
+
+/* Design kit: colour, type, icons and shape, four short cells on the same two columns as the preferences list. */
+.sc-kit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 0 clamp(24px, 4vw, 64px);
+}
+.sc-kit-cell {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-3) 0 var(--space-5);
+  border-top: var(--rule);
+}
+.sc-kit-cell p {
+  margin: 0;
+  max-width: var(--measure-s);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-text);
+}
+.sc-swatches {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-swatches li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  font-size: var(--fs-small);
+  line-height: 1.25;
+}
+.sc-chip {
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid var(--ink);
+}
+.sc-swatches code {
+  font-family: var(--demo-mono);
+  font-size: var(--fs-label);
+  letter-spacing: 0.02em;
+}
+.sc-specimen {
+  display: grid;
+  gap: var(--space-2);
+}
+.sc-specimen .sc-spec-sans {
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.sc-specimen .sc-spec-mono {
+  font-family: var(--demo-mono);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 500;
+}
+.sc-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sc-icons li {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 8px;
+  width: 96px;
+  overflow-wrap: anywhere;
+  font-family: var(--demo-mono);
+  font-size: var(--fs-label);
+  line-height: 1.25;
+}
+.sc-plate {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  background: var(--ink);
+  color: #fff;
+}
+.sc-plate svg {
+  width: 28px;
+  height: 28px;
+}
+@media (max-width: 719.98px) {
+  .sc-kit-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-swatches {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* A grid item cannot shrink below its content by default, so a long code line stretched the whole page on a phone. The
+   items of a section may shrink, and the code block scrolls inside itself instead. */
+.sc-section > * {
+  min-width: 0;
+}
+@media (max-width: 599.98px) {
+  .sc-code {
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 18px;
+  }
 }

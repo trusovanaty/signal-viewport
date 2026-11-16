@@ -523,3 +523,13 @@ From a tester's screen recording on an iPhone (Safari) and from Android:
 - Fix: a small `FallbackOnError` component inside each player watches the store's error and switches to the MP4 once (the player restarts clean on the file); `onError` on the media is kept too. `?nofallback` still keeps the error on screen. Checked in Chrome with `*mux.com*` blocked: all four players (the main one and the three "Any format" frames) played the MP4 with captions, chapters and thumbnails within 3 seconds and showed no dialog; with `?nofallback` the dialog stayed; with Mux reachable the stream played from Mux.
 - Also checked: the focus ring against the red panel (white 4.56:1, the pin's black 4.61:1; 21:1 in Mono) and the menu rows (48 px in both themes). The contrast wording is "at least 4.5:1 for both".
 - iPhone Safari full screen opens Apple's own player (browser limit); after leaving it the page was intact in the tester's recording. Not run on a device here.
+
+## Design kit section (Nov 16)
+
+- A new landing section "Design kit." (EN) / "Набір дизайну." (UK), after Preferences: four short cells on the same two columns as the other lists. Colour: five swatches with their codes (Signal red #E52600, Ink #000000, Surface #17151A, Paper #FFFFFF, Mono grey #6B6B6B) and the contrast note (black 4.61:1, white 4.56:1: at least 4.5:1 for both). Type: Onest and IBM Plex Mono specimens. Icons: the skin's ten icons, drawn by the skin's own components (`icons.tsx`, one family built from the ruler's parts: 24 px grid, solid shapes, sharp corners). Shape: sharp corners, 48 px buttons, 56 px ruler, 3 px pin stem.
+- It is static (no script), takes part in the section reveal like the others, and was checked at 1440 and 390 px in English and at 1440 px in Ukrainian: no horizontal scroll, all ten icons and five swatches present.
+
+## The integration example on a phone (Nov 16)
+
+- Bug: opening "Integration example" at the bottom of the landing made the whole page wider than a phone (the code block, 465 px of text, was 469 px wide at 390 px): a grid item cannot shrink below its content by default, so the block stretched its section instead of scrolling inside itself.
+- Fix: the items of a section may shrink (`.sc-section > * { min-width: 0 }`), the code block has `max-width: 100%` and scrolls on its own, and under 600 px it is set at 12 px with tighter padding. Checked in Chrome, every disclosure open, English and Ukrainian, at 320, 375, 390, 430, 768, 1024 and 1440 px: no horizontal scroll anywhere; at 320 and 390 px the code scrolls inside its frame.

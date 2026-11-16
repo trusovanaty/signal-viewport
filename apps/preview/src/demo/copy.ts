@@ -48,6 +48,21 @@ export interface Copy {
   };
   formats: { title: string; text: string; items: [string, string][] };
   prefs: { title: string; text: string; items: [string, string][] };
+  /** The design kit: colour, type, icons and shape. */
+  kit: {
+    title: string;
+    text: string;
+    colour: string;
+    colourNote: string;
+    swatches: [string, string][];
+    type: string;
+    typeNote: string;
+    icons: string;
+    iconsNote: string;
+    iconNames: string[];
+    shape: string;
+    shapeNote: string;
+  };
   keyboard: {
     title: string;
     text: string;
@@ -201,6 +216,26 @@ export const COPY: Record<string, Copy> = {
         ['Accessibility', 'Styles for reduced motion and high contrast, and state changes announced to screen readers.'],
         ['Touch', 'Tap the picture to pause or play; double-tap the left or right side to seek, the centre to go fullscreen.'],
       ],
+    },
+    kit: {
+      title: 'Design kit.',
+      text: 'Colour, type and icons: one small system, built from the ruler.',
+      colour: 'Colour',
+      colourNote: 'Black on the red surface is 4.61:1 and white is 4.56:1: at least 4.5:1 for both.',
+      swatches: [
+        ['Signal red', '#E52600'],
+        ['Ink', '#000000'],
+        ['Surface', '#17151A'],
+        ['Paper', '#FFFFFF'],
+        ['Mono grey', '#6B6B6B'],
+      ],
+      type: 'Type',
+      typeNote: 'Onest for words, IBM Plex Mono for time and measurements. Both are open licence.',
+      icons: 'Icons',
+      iconsNote: 'One icon family, drawn from the ruler’s own parts: a 24 px grid, solid shapes, sharp corners.',
+      iconNames: ['Play', 'Pause', 'Replay', 'Volume', 'Muted', 'Settings', 'Picture in picture', 'Error', 'Full screen', 'Exit full screen'],
+      shape: 'Shape',
+      shapeNote: 'Sharp corners everywhere. Buttons are 48 px, the ruler is 56 px high and the pin has a 3 px stem.',
     },
     keyboard: {
       title: 'Navigation.',
@@ -376,6 +411,26 @@ export const COPY: Record<string, Copy> = {
         ['Доступність', 'Стилі для зменшення руху та високого контрасту, а зміни стану озвучуються для скрінрідерів.'],
         ['Дотик', 'Торкніться зображення, щоб поставити на паузу чи відновити; двічі торкніться лівого або правого боку, щоб перемотати, центру, щоб увімкнути повний екран.'],
       ],
+    },
+    kit: {
+      title: 'Набір дизайну.',
+      text: 'Колір, шрифти та іконки: невелика система, побудована з лінійки.',
+      colour: 'Колір',
+      colourNote: 'Чорний на червоній панелі має 4,61:1, білий 4,56:1: щонайменше 4,5:1 для обох.',
+      swatches: [
+        ['Сигнальний червоний', '#E52600'],
+        ['Чорнило', '#000000'],
+        ['Поверхня', '#17151A'],
+        ['Папір', '#FFFFFF'],
+        ['Моно-сірий', '#6B6B6B'],
+      ],
+      type: 'Шрифти',
+      typeNote: 'Onest для слів, IBM Plex Mono для часу й вимірювань. Обидва мають відкриту ліцензію.',
+      icons: 'Іконки',
+      iconsNote: 'Одна родина іконок, намальована з деталей лінійки: сітка 24 px, суцільні форми, гострі кути.',
+      iconNames: ['Відтворення', 'Пауза', 'Повтор', 'Звук', 'Без звуку', 'Налаштування', 'Картинка в картинці', 'Помилка', 'Повний екран', 'Вийти з повного екрана'],
+      shape: 'Форма',
+      shapeNote: 'Гострі кути скрізь. Кнопки 48 px, лінійка 56 px заввишки, стрижень відмітки 3 px.',
     },
     keyboard: {
       title: 'Навігація.',

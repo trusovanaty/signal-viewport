@@ -8,6 +8,7 @@ import './demo.css';
 import './showcase.css';
 import './motion.css';
 import { initReveal } from './reveal';
+import { AlertIcon, FullscreenEnterIcon, FullscreenExitIcon, MutedIcon, PauseIcon, PipIcon, PlayIcon, ReplayIcon, SettingsIcon, VolumeIcon } from '@/video/shared/icons';
 import { setSignalTheme, useSignalTheme } from '@/video/shared/preferences';
 import { FormatPlayer, MATERIAL, Player, TITLE, type LocalMedia } from '../frame/player';
 import { COPY, EXAMPLE, STATES, type Copy, type StateKey } from './copy';
@@ -540,6 +541,59 @@ function Preferences({ copy }: { copy: Copy['prefs'] }) {
   );
 }
 
+/** The skin's own icons, in the order of the names in the copy. */
+const KIT_ICONS = [PlayIcon, PauseIcon, ReplayIcon, VolumeIcon, MutedIcon, SettingsIcon, PipIcon, AlertIcon, FullscreenEnterIcon, FullscreenExitIcon];
+
+/** Colour, type, icons and shape: four short cells on the same two columns as the other lists. */
+function DesignKit({ copy }: { copy: Copy['kit'] }) {
+  return (
+    <section className="sc-section sc-kit" aria-labelledby="sc-kit">
+      <SectionHead id="sc-kit" title={copy.title} text={copy.text} />
+      <div className="sc-kit-grid">
+        <div className="sc-kit-cell">
+          <h3 className="sc-sub-heading">{copy.colour}</h3>
+          <ul className="sc-swatches">
+            {copy.swatches.map(([name, hex]) => (
+              <li key={hex}>
+                <span className="sc-chip" style={{ background: hex }} aria-hidden="true" />
+                <b>{name}</b>
+                <code>{hex}</code>
+              </li>
+            ))}
+          </ul>
+          <p>{copy.colourNote}</p>
+        </div>
+        <div className="sc-kit-cell">
+          <h3 className="sc-sub-heading">{copy.type}</h3>
+          <p className="sc-specimen" aria-hidden="true">
+            <span className="sc-spec-sans">Every frame.</span>
+            <span className="sc-spec-mono">0:00 / 0:30</span>
+          </p>
+          <p>{copy.typeNote}</p>
+        </div>
+        <div className="sc-kit-cell">
+          <h3 className="sc-sub-heading">{copy.icons}</h3>
+          <ul className="sc-icons">
+            {KIT_ICONS.map((Icon, i) => (
+              <li key={i}>
+                <span className="sc-plate">
+                  <Icon />
+                </span>
+                <span>{copy.iconNames[i]}</span>
+              </li>
+            ))}
+          </ul>
+          <p>{copy.iconsNote}</p>
+        </div>
+        <div className="sc-kit-cell">
+          <h3 className="sc-sub-heading">{copy.shape}</h3>
+          <p>{copy.shapeNote}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // The two link arrows are drawn, not typed: one 2px square-ended line weight, the same on both, in the button's colour.
 function Arrow({ kind }: { kind: 'out' | 'right' }) {
   return (
@@ -700,6 +754,7 @@ function Demo() {
       <States copy={copy.states} />
       <div className="sc-wrap">
         <Preferences copy={copy.prefs} />
+        <DesignKit copy={copy.kit} />
         <Use copy={copy.use} />
       </div>
       {/* The footer closes the page on black, like the black bands above it. */}
