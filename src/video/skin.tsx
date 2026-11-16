@@ -6,7 +6,7 @@ import '../styles/video/scaffold.css';
 import '../styles/fonts.css';
 import '../styles/signal.css';
 import { Container as ContainerPrimitive, Poster as PosterPrimitive, Slider as SliderPrimitive } from '@videojs/react';
-import type { ReactNode } from 'react';
+import type { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
 
 import { cn } from '@/lib/resolve-class-name';
 
@@ -37,10 +37,31 @@ export interface VideoSkinProps extends Omit<ContainerPrimitive.Props, 'children
   themeSwitch?: boolean;
 }
 
-export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, ...props }: VideoSkinProps = {}) {
+/**
+ * A click on the picture (or any plain part of the player) leaves the focus on the page, so the keyboard shortcuts (M, K,
+ * J, L, F, C, arrows) would do nothing until a button was clicked. Move the focus to the player itself instead. Controls
+ * keep their own focus.
+ */
+function focusPlayerOnPointer(event: ReactMouseEvent<HTMLElement>) {
+  const root = event.currentTarget;
+  // After the click has been handled: a plain part of the picture never takes the focus, and the big start button
+  // disappears when the video starts. In both cases the focus would be left on the page, so give it to the player.
+  window.setTimeout(() => {
+    const active = document.activeElement;
+    if (!active || active === document.body || !root.contains(active)) {
+      if (root.isConnected) root.focus({ preventScroll: true });
+    }
+  }, 120);
+}
+
+export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, onClick, ...props }: VideoSkinProps = {}) {
   const theme = useSignalTheme();
   return (
     <ContainerPrimitive
+      onClick={(event: ReactMouseEvent<HTMLElement>) => {
+        focusPlayerOnPointer(event);
+        (onClick as ((e: ReactMouseEvent<HTMLElement>) => void) | undefined)?.(event);
+      }}
       className={cn(
         'media-skin signal-skin',
         'relative h-full w-full text-media-foreground @container/media-root',
