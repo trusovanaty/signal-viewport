@@ -2,7 +2,7 @@
 
 import { Menu, Thumbnail, useCaptionsOptions, useMedia, usePlaybackRateOptions, useQualityOptions } from '@videojs/react';
 import { usePlayer } from '@videojs/react/video';
-import { type ReactNode, useContext, useEffect, useRef } from 'react';
+import { type ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import { SettingsIcon } from './icons';
 import { formatTime } from '../format';
@@ -57,6 +57,9 @@ function FocusFirstItem({ submenu }: { submenu?: string } = {}) {
   return <span ref={marker} hidden />;
 }
 
+/** Closes the whole menu: a chosen option is a finished action, and the keys (Space, M, K, ...) then go to the player. */
+const CloseMenuContext = createContext<() => void>(() => {});
+
 interface Option {
   value: string;
   label: string;
@@ -75,6 +78,7 @@ interface Picker {
 }
 
 function Radios({ label, picker, note }: { label: string; picker: Picker; note?: ReactNode }) {
+  const closeMenu = useContext(CloseMenuContext);
   // A list of four to nine short options (speeds, resolutions) is laid out as a grid on narrow players, so it fits the
   // picture instead of scrolling inside it. Rows with a picture (chapters) stay a list.
   const grid = picker.options.length > 3 && picker.options.length <= 9 && !picker.options.some((o) => o.leading);
@@ -83,7 +87,10 @@ function Radios({ label, picker, note }: { label: string; picker: Picker; note?:
       <Menu.RadioGroup
         className={grid ? 'signal-menu-group signal-menu-group--grid' : 'signal-menu-group'}
         value={picker.value}
-        onValueChange={picker.setValue}
+        onValueChange={(value: string) => {
+          picker.setValue(value);
+          closeMenu();
+        }}
         aria-label={label}
       >
         {picker.options.map((option) => (
@@ -161,6 +168,7 @@ export function SettingsMenu() {
   const startOver = useStartOver();
   const themeSwitch = useContext(ThemeSwitchContext);
   const theme = useSignalTheme();
+  const [open, setOpen] = useState(false);
 
   const hasRate = rate?.state.availability === 'available';
   const hasQuality = quality?.state.availability === 'available';
@@ -249,7 +257,8 @@ export function SettingsMenu() {
   const qualityNote = activeHeight ? <div className="signal-menu-note">{copy.nowPlayingText(activeHeight)}</div> : null;
 
   return (
-    <Menu.Root side="top" align="end">
+    <CloseMenuContext.Provider value={() => setOpen(false)}>
+    <Menu.Root side="top" align="end" open={open} onOpenChange={(next: boolean) => setOpen(next)}>
       <Menu.Trigger
         className="signal-btn signal-btn--menu"
         aria-label={copy.settingsLabel(speed)}
@@ -284,5 +293,6 @@ export function SettingsMenu() {
         </Menu.Content>
       </Menu.Popup>
     </Menu.Root>
+    </CloseMenuContext.Provider>
   );
 }
