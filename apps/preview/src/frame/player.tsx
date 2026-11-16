@@ -1,7 +1,7 @@
 import { useLocale } from '@videojs/react/i18n';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MuxVideo } from '@videojs/react/media/mux-video';
-import { Video, VideoPlayer } from '@videojs/react/video';
+import { Video, VideoPlayer, usePlayer } from '@videojs/react/video';
 
 import { VideoSkin } from '@/video/skin';
 
@@ -43,6 +43,29 @@ function useDemoTracks() {
   );
 }
 
+/**
+ * Mux first, the bundled MP4 if the stream cannot be loaded. `setFallback(true)` switches once (the player restarts clean on
+ * the file). `?nofallback` keeps a Mux failure on screen (to look at, or to capture, the error state).
+ */
+function useMuxFallback(): [boolean, () => void] {
+  const [fallback, setFallbackState] = useState(false);
+  return [fallback, () => (NO_FALLBACK ? undefined : setFallbackState(true))];
+}
+
+/**
+ * A network or streaming failure lands in the player's store (the same error the error dialog shows), but the media element
+ * never fires a native `error` event for it, so `onError` on the media is not enough. This watches the store and calls back
+ * once. It renders nothing and only sits on the Mux branch.
+ */
+function FallbackOnError({ onError }: { onError: () => void }) {
+  const error = usePlayer((s) => s.error);
+  useEffect(() => {
+    if (error) onError();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+  return null;
+}
+
 /** A video the visitor opened from their own computer: a blob address made in this browser, and the file's name. */
 export interface LocalMedia {
   url: string;
@@ -82,9 +105,7 @@ export function Player({
 
 /** The demo film: Mux first, the bundled MP4 if the stream fails to load (once; the player restarts clean on the file). */
 function DemoPlayer({ media }: { media?: PlaybackProps }) {
-  const [fallback, setFallbackState] = useState(false);
-  // `?nofallback` keeps the Mux failure on screen (to look at, or to capture, the error state).
-  const setFallback = (value: boolean) => (NO_FALLBACK ? undefined : setFallbackState(value));
+  const [fallback, switchToFile] = useMuxFallback();
   const tracks = useDemoTracks();
   return (
     <VideoPlayer key={fallback ? 'demo-file' : 'demo-mux'} title={TITLE} poster={POSTER}>
@@ -94,9 +115,12 @@ function DemoPlayer({ media }: { media?: PlaybackProps }) {
             {tracks}
           </Video>
         ) : (
-          <MuxVideo {...media} src={MUX_SRC} playsInline crossOrigin="" onError={() => setFallback(true)}>
-            {tracks}
-          </MuxVideo>
+          <>
+            <MuxVideo {...media} src={MUX_SRC} playsInline crossOrigin="" onError={switchToFile}>
+              {tracks}
+            </MuxVideo>
+            <FallbackOnError onError={switchToFile} />
+          </>
         )}
       </VideoSkin>
     </VideoPlayer>
@@ -110,7 +134,7 @@ function DemoPlayer({ media }: { media?: PlaybackProps }) {
  * colour): the same Mux stream (metadata only until played), with the bundled MP4 as the fallback.
  */
 export function FormatPlayer() {
-  const [fallback, setFallback] = useState(false);
+  const [fallback, switchToFile] = useMuxFallback();
   const tracks = useDemoTracks();
   return (
     <VideoPlayer key={fallback ? 'format-file' : 'format-mux'} title={TITLE} poster={POSTER}>
@@ -120,9 +144,12 @@ export function FormatPlayer() {
             {tracks}
           </Video>
         ) : (
-          <MuxVideo src={MUX_SRC} playsInline preload="metadata" crossOrigin="" onError={() => setFallback(true)}>
-            {tracks}
-          </MuxVideo>
+          <>
+            <MuxVideo src={MUX_SRC} playsInline preload="metadata" crossOrigin="" onError={switchToFile}>
+              {tracks}
+            </MuxVideo>
+            <FallbackOnError onError={switchToFile} />
+          </>
         )}
       </VideoSkin>
     </VideoPlayer>
