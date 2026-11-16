@@ -760,6 +760,8 @@
  */
 @container media-root (max-width: 559.98px) {
   .signal-menu {
+    /* The 240px minimum is for the popover next to its button; a sheet is never wider than the player, even a 200px one. */
+    min-width: 0;
     width: calc(100cqw - 24px);
   }
   @supports (top: anchor(top)) {
@@ -770,6 +772,7 @@
       /* Never taller than the picture area above the panel: long lists scroll instead of leaving the player. */
       max-height: anchor-size(--signal-viewport height) !important;
       width: anchor-size(width) !important;
+      min-width: 0 !important;
       max-width: none !important;
       translate: none !important;
     }

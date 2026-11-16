@@ -20,6 +20,7 @@ function FocusFirstItem({ submenu }: { submenu?: string } = {}) {
   useEffect(() => {
     const popup = marker.current?.closest<HTMLElement>('.signal-menu');
     if (!popup) return;
+    const player = popup.closest<HTMLElement>('.signal-skin');
     const frame = requestAnimationFrame(() => {
       const panel = marker.current?.parentElement;
       if (!panel || panel.contains(document.activeElement)) return;
@@ -32,6 +33,15 @@ function FocusFirstItem({ submenu }: { submenu?: string } = {}) {
     });
     return () => {
       cancelAnimationFrame(frame);
+      // The whole menu closed (Escape, a click outside): give the focus to the player, not to the settings button. On the
+      // button, Space would press it and open the menu again, instead of playing and pausing.
+      if (!submenu && player) {
+        requestAnimationFrame(() => {
+          if (!player.isConnected || player.querySelector('.signal-menu')) return;
+          const active = document.activeElement;
+          if (!active || active === document.body || active.classList.contains('signal-btn--menu')) player.focus({ preventScroll: true });
+        });
+      }
       // Leaving a submenu (Back, ArrowLeft): hand focus back to the row that opened it, unless the whole menu closed.
       if (submenu) {
         requestAnimationFrame(() => {
