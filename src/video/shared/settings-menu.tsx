@@ -15,6 +15,13 @@ import { useHasSavedPosition, useStartOver } from './resume';
  * placement matches the popup; the narrow layout re-anchors the sheet over the panel with CSS, so we do it explicitly.
  * Mounts with the popup, which only exists while the menu is open.
  */
+/** How the viewer last acted: with the keyboard or with a pointer. It decides where the focus goes when the menu closes. */
+let lastInput: 'key' | 'pointer' = 'pointer';
+if (typeof window !== 'undefined') {
+  window.addEventListener('keydown', () => (lastInput = 'key'), true);
+  window.addEventListener('pointerdown', () => (lastInput = 'pointer'), true);
+}
+
 function FocusFirstItem({ submenu }: { submenu?: string } = {}) {
   const marker = useRef<HTMLSpanElement>(null);
   useEffect(() => {
@@ -33,13 +40,21 @@ function FocusFirstItem({ submenu }: { submenu?: string } = {}) {
     });
     return () => {
       cancelAnimationFrame(frame);
-      // The whole menu closed (Escape, a click outside): give the focus to the player, not to the settings button. On the
-      // button, Space would press it and open the menu again, instead of playing and pausing.
+      // The whole menu closed. After a mouse or touch choice the focus goes to the player (Space then plays and pauses); after
+      // a keyboard choice it stays on the settings button.
       if (!submenu && player) {
+        const byKeyboard = lastInput === 'key';
         requestAnimationFrame(() => {
           if (!player.isConnected || player.querySelector('.signal-menu')) return;
+          const button = player.querySelector<HTMLElement>('.signal-btn--menu');
           const active = document.activeElement;
-          if (!active || active === document.body || active.classList.contains('signal-btn--menu')) player.focus({ preventScroll: true });
+          if (byKeyboard) {
+            // With the keyboard the viewer is walking along the controls: the settings button stays the current one, so
+            // Enter opens the menu again for one more change and Tab goes on to the next control.
+            if (button && (!active || active === document.body || !player.contains(active) || active === player)) button.focus({ preventScroll: true });
+          } else if (!active || active === document.body || active === button) {
+            player.focus({ preventScroll: true });
+          }
         });
       }
       // Leaving a submenu (Back, ArrowLeft): hand focus back to the row that opened it, unless the whole menu closed.

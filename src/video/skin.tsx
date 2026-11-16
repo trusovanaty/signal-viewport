@@ -69,16 +69,29 @@ function latinKeyFor(event: ReactKeyboardEvent<HTMLElement>): string | null {
   return null;
 }
 
-function repeatWithLatinKey(event: ReactKeyboardEvent<HTMLElement>) {
+function repeatWithLatinKey(event: ReactKeyboardEvent<HTMLElement>): boolean {
   const target = event.target as HTMLElement;
-  if (target.closest('input, textarea, [contenteditable="true"]')) return;
+  if (target.closest('input, textarea, [contenteditable="true"]')) return false;
   const key = latinKeyFor(event);
-  if (!key) return;
+  if (!key) return false;
   event.preventDefault();
   event.stopPropagation();
   target.dispatchEvent(
     new KeyboardEvent('keydown', { key, code: event.code, shiftKey: event.shiftKey, repeat: event.repeat, bubbles: true, cancelable: true })
   );
+  return true;
+}
+
+/** S opens the settings menu from anywhere in the player (the menu itself uses the letters to pick rows, so it is left alone). */
+function openMenuOnS(event: ReactKeyboardEvent<HTMLElement>) {
+  if (event.key !== 's' && event.key !== 'S') return;
+  if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
+  const target = event.target as HTMLElement;
+  if (target.closest('input, textarea, [contenteditable="true"], .signal-menu')) return;
+  const button = event.currentTarget.querySelector<HTMLElement>('.signal-btn--menu');
+  if (!button) return;
+  event.preventDefault();
+  button.click();
 }
 
 export function VideoSkin({ children, className, renderPoster, resumeKey, themeSwitch, onClick, onKeyDownCapture, ...props }: VideoSkinProps = {}) {
@@ -86,7 +99,7 @@ export function VideoSkin({ children, className, renderPoster, resumeKey, themeS
   return (
     <ContainerPrimitive
       onKeyDownCapture={(event: ReactKeyboardEvent<HTMLElement>) => {
-        repeatWithLatinKey(event);
+        if (!repeatWithLatinKey(event)) openMenuOnS(event);
         (onKeyDownCapture as ((e: ReactKeyboardEvent<HTMLElement>) => void) | undefined)?.(event);
       }}
       onClick={(event: ReactMouseEvent<HTMLElement>) => {
